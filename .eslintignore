@@ -1,0 +1,18 @@
+# folders
+artifacts/
+artifacts-ovm/
+build/
+cache/
+cache-ovm/
+coverage/
+dist/
+lib/
+node_modules/
+typechain/
+typechain-ovm/
+contracts/ovm-lib/openzeppelin/
+
+# files
+.solcover.js
+coverage.json
+docify.js

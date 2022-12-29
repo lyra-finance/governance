@@ -1,0 +1,30 @@
+{
+  "LyraDistributor": {
+    "address": "0x9715892c275A7B7D45467B95A8eF382416a29146",
+    "blockNumber": 370393
+  },
+  "ArbitraryTokenMultisender": {
+    "address": "0x9b6470B0ea8e4A4429ae71414aEC90592C43d6fb",
+    "blockNumber": 422064
+  },
+  "LyraToken": {
+    "address": "0xC9801013F0c45F836Ad07Dded1df9C475d2844FC",
+    "blockNumber": 3787155
+  },
+  "LyraSafetyModule": {
+    "address": "0x69D7Ca59F2FE3C183cf2536bCcea4735a2AB9a21",
+    "blockNumber": 5221351
+  },
+  "LyraSafetyModuleProxy": {
+    "address": "0xd16D254C42a03aD72d77B4226d086AFcc0B2E43e",
+    "blockNumber": 5221361
+  },
+  "LyraSafetyModuleMigration": {
+    "address": "0x561d35310C6fc21cC31EFc7e36cd84254B0eD6fc",
+    "blockNumber": 5505253
+  },
+  "MultiDistributor": {
+    "address": "0x4e8da116C02860f12360b7de7bDD48C9B5A9C8EC",
+    "blockNumber": 5892473
+  }
+}

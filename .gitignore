@@ -1,0 +1,25 @@
+# folders
+.vscode
+.idea
+.DS_Store
+artifacts
+artifacts-ovm
+cache
+cache-ovm
+node_modules
+typechain
+typechain-ovm
+
+coverage
+.coverage_artifacts
+.coverage_cache
+.coverage_contracts
+coverage.json
+
+# files
+*.env.private
+*.log
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

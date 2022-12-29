@@ -1,0 +1,11 @@
+# folders
+.yarn/
+build/
+dist/
+node_modules/
+
+contracts/ovm-lib
+
+contracts/token/LyraDistributor.sol
+contracts/token/ArbitraryTokenMultisender.sol
+contracts/safety-module/VirtualAAVEStakedToken.sol
