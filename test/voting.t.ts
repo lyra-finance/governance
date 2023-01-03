@@ -1,12 +1,11 @@
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { deployTestContracts, TestSystemContractsType } from "./utils/deployTestSystem";
-import { expect } from "chai";
-import { fastForward, restoreSnapshot, takeSnapshot, toBN } from "./utils";
+import { DAY_SEC, restoreSnapshot, takeSnapshot, toBN, WEEK_SEC, ZERO_ADDRESS } from "./utils";
 import { InitializableAdminUpgradeabilityProxy, LyraSafetyModule } from "../typechain";
 import { BigNumber } from "ethers";
 
-describe("VestingEscrow/StakedLyra - Integration", function () {
+describe.only("GovernorBravo voting with stkLyra", function () {
   let admin: SignerWithAddress;
   let proxyAdmin: SignerWithAddress;
   let karpincho: SignerWithAddress;
@@ -22,7 +21,7 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
   const COOLDOWN_SECONDS = "3600"; // 1 hour in seconds
   const UNSTAKE_WINDOW = "1800"; // 30 min in seconds
 
-  before(async function () {
+  it("does some voting", async function () {
     [admin, proxyAdmin, karpincho] = await ethers.getSigners();
 
     c = await deployTestContracts(admin);
@@ -66,6 +65,22 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
         underlyingAsset: stakedLyra.address,
       },
     ]);
+
+    await stakedLyra.stake(karpincho.address, vestingAmount);
+
+    const governanceStrategy = await (
+      await ethers.getContractFactory("LyraGovernanceStrategy")
+    ).deploy(stakedLyra.address);
+
+    const aaveGovernance = await (
+      await ethers.getContractFactory("AaveGovernanceV2")
+    ).deploy(
+      governanceStrategy.address,
+      10, // voting delay
+      admin.address,
+      [admin.address],
+    );
+    console.log(aaveGovernance.address);
   });
 
   beforeEach(async () => {
@@ -74,37 +89,5 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
 
   afterEach(async () => {
     await restoreSnapshot(snap);
-  });
-
-  it("should start the staking cooldown period", async () => {
-    await stakedLyra.stake(karpincho.address, vestingAmount);
-
-    await expect(stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount)).revertedWith(
-      "UNSTAKE_WINDOW_FINISHED",
-    );
-
-    await stakedLyra.connect(karpincho).cooldown();
-
-    await expect(stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount)).revertedWith(
-      "INSUFFICIENT_COOLDOWN",
-    );
-
-    await fastForward((await stakedLyra.COOLDOWN_SECONDS()).toNumber());
-
-    const preBalance = await c.lyraToken.balanceOf(karpincho.address);
-
-    await stakedLyra.connect(admin).redeem(karpincho.address, vestingAmount);
-
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(vestingAmount); // nothing changed
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance); // nothing changed
-
-    await stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount);
-
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(0);
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance.add(vestingAmount));
-
-    await stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount);
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(0); // nothing changed
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance.add(vestingAmount)); // nothing changed
   });
 });

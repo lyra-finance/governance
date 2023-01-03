@@ -81,10 +81,6 @@ export async function fastForward(seconds: number) {
   const method = "evm_increaseTime";
   const params = [seconds];
 
-  // TODO: check which method we need for hardhat
-  // method: 'evm_setNextBlockTimestamp',
-  // params: [(await currentTime()) + seconds],
-
   await send(method, params);
 
   await mineBlock();

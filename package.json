@@ -47,8 +47,10 @@
     "@openzeppelin/contracts-upgradeable": "3.4.1-solc-0.7-2"
   },
   "devDependencies": {
-    "@aave/aave-token": "^1.0.4",
     "@aave/aave-stake-v2": "github:aave/aave-stake-v2#b9e40fb1c14df7e3874e4def53860d0f53c1d958",
+    "@aave/aave-token": "1.0.4",
+    "@aave/governance-v2": "1.0.0",
+    "@aave/governance-crosschain-bridges": "1.0.2",
     "@eth-optimism/hardhat-ovm": "^0.2.2",
     "@eth-optimism/watcher": "^0.0.1-alpha.9",
     "@nomiclabs/hardhat-ethers": "^2.0.2",

@@ -98,11 +98,7 @@ contract VirtualAAVEStakedToken is
   /**
    * @dev Called by the proxy contract
    **/
-  function initialize(
-    string calldata name,
-    string calldata symbol,
-    uint8 decimals
-  ) external initializer {
+  function initialize(string calldata name, string calldata symbol, uint8 decimals) external initializer {
     uint256 chainId;
 
     //solium-disable-next-line
@@ -203,11 +199,7 @@ contract VirtualAAVEStakedToken is
    * @param to Address to transfer to
    * @param amount Amount to transfer
    **/
-  function _transfer(
-    address from,
-    address to,
-    uint256 amount
-  ) internal virtual override {
+  function _transfer(address from, address to, uint256 amount) internal virtual override {
     uint256 balanceOfFrom = balanceOf(from);
     // Sender
     _updateCurrentUnclaimedRewards(from, balanceOfFrom, true);
@@ -368,11 +360,7 @@ contract VirtualAAVEStakedToken is
    * @param to the to address
    * @param amount the amount to transfer
    */
-  function _beforeTokenTransfer(
-    address from,
-    address to,
-    uint256 amount
-  ) internal override {
+  function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
     address votingFromDelegatee = _votingDelegates[from];
     address votingToDelegatee = _votingDelegates[to];
 
@@ -404,7 +392,9 @@ contract VirtualAAVEStakedToken is
     }
   }
 
-  function _getDelegationDataByType(DelegationType delegationType)
+  function _getDelegationDataByType(
+    DelegationType delegationType
+  )
     internal
     view
     override
@@ -460,14 +450,7 @@ contract VirtualAAVEStakedToken is
    * @param r Half of the ECDSA signature pair
    * @param s Half of the ECDSA signature pair
    */
-  function delegateBySig(
-    address delegatee,
-    uint256 nonce,
-    uint256 expiry,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-  ) public {
+  function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s) public {
     bytes32 structHash = keccak256(abi.encode(DELEGATE_TYPEHASH, delegatee, nonce, expiry));
     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
     address signatory = ecrecover(digest, v, r, s);

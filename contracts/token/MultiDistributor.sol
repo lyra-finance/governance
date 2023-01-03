@@ -63,11 +63,10 @@ contract MultiDistributor is Ownable {
     }
   }
 
-  function getClaimableForAddresses(address[] memory addresses, IERC20[] memory tokens)
-    external
-    view
-    returns (UserTokenAmounts[] memory claimed, UserTokenAmounts[] memory claimable)
-  {
+  function getClaimableForAddresses(
+    address[] memory addresses,
+    IERC20[] memory tokens
+  ) external view returns (UserTokenAmounts[] memory claimed, UserTokenAmounts[] memory claimable) {
     claimable = new UserTokenAmounts[](addresses.length * tokens.length);
     claimed = new UserTokenAmounts[](addresses.length * tokens.length);
     for (uint256 i = 0; i < addresses.length; i++) {

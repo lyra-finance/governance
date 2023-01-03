@@ -16,11 +16,7 @@ contract Lyra is ERC20Permit {
    * @param symbol The symbol of the token
    * @param supply The total supply to be minted to the deployer
    */
-  constructor(
-    string memory name,
-    string memory symbol,
-    uint256 supply
-  ) ERC20Permit(name) ERC20(name, symbol) {
+  constructor(string memory name, string memory symbol, uint256 supply) ERC20Permit(name) ERC20(name, symbol) {
     _mint(msg.sender, supply);
   }
 }

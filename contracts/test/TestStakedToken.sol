@@ -23,12 +23,7 @@ contract TestStakedToken is ERC20, IStakedLyra {
   mapping(address => uint256) public stakerRewardsToClaim;
   mapping(address => uint256) public stakersCooldowns;
 
-  constructor(
-    string memory name,
-    string memory symbol,
-    IERC20 stakedToken,
-    address rewardsVault
-  ) ERC20(name, symbol) {
+  constructor(string memory name, string memory symbol, IERC20 stakedToken, address rewardsVault) ERC20(name, symbol) {
     STAKED_TOKEN = stakedToken;
     REWARDS_VAULT = rewardsVault;
   }
