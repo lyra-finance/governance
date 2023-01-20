@@ -4,6 +4,7 @@ import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 
 export enum ContractId {
+  TokenMigrator = "TokenMigrator",
   VestingEscrow = "VestingEscrow",
   VestingEscrowV2 = "VestingEscrowV2",
   LyraToken = "LyraToken",

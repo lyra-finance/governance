@@ -9,9 +9,10 @@ export async function deployAndValidate(
   contractId: ContractId,
   args: any[],
   contractPath?: string,
+  overrides: any = {}
 ): Promise<Contract> {
   const factory = await ethers.getContractFactory(contractName, deployer);
-  const instance = await factory.deploy(...args);
+  const instance = await factory.deploy(...args, {...overrides});
 
   console.log(instance.deployTransaction.hash);
 

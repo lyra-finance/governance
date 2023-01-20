@@ -3,6 +3,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "hardhat-contract-sizer";
 import "hardhat-gas-reporter";
+import "hardhat-tracer";
 import "@typechain/hardhat";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-etherscan";

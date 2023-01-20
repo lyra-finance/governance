@@ -9,7 +9,7 @@ import { BigNumber } from "ethers";
 describe("VestingEscrow/StakedLyra - Integration", function () {
   let admin: SignerWithAddress;
   let proxyAdmin: SignerWithAddress;
-  let karpincho: SignerWithAddress;
+  let alice: SignerWithAddress;
 
   let c: TestSystemContractsType;
   let snap: number;
@@ -23,7 +23,7 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
   const UNSTAKE_WINDOW = "1800"; // 30 min in seconds
 
   before(async function () {
-    [admin, proxyAdmin, karpincho] = await ethers.getSigners();
+    [admin, proxyAdmin, alice] = await ethers.getSigners();
 
     c = await deployTestContracts(admin);
 
@@ -77,34 +77,34 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
   });
 
   it("should start the staking cooldown period", async () => {
-    await stakedLyra.stake(karpincho.address, vestingAmount);
+    await stakedLyra.stake(alice.address, vestingAmount);
 
-    await expect(stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount)).revertedWith(
+    await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith(
       "UNSTAKE_WINDOW_FINISHED",
     );
 
-    await stakedLyra.connect(karpincho).cooldown();
+    await stakedLyra.connect(alice).cooldown();
 
-    await expect(stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount)).revertedWith(
+    await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith(
       "INSUFFICIENT_COOLDOWN",
     );
 
     await fastForward((await stakedLyra.COOLDOWN_SECONDS()).toNumber());
 
-    const preBalance = await c.lyraToken.balanceOf(karpincho.address);
+    const preBalance = await c.lyraToken.balanceOf(alice.address);
 
-    await stakedLyra.connect(admin).redeem(karpincho.address, vestingAmount);
+    await stakedLyra.connect(admin).redeem(alice.address, vestingAmount);
 
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(vestingAmount); // nothing changed
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance); // nothing changed
+    expect(await stakedLyra.balanceOf(alice.address)).eq(vestingAmount); // nothing changed
+    expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance); // nothing changed
 
-    await stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount);
+    await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
 
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(0);
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance.add(vestingAmount));
+    expect(await stakedLyra.balanceOf(alice.address)).eq(0);
+    expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance.add(vestingAmount));
 
-    await stakedLyra.connect(karpincho).redeem(karpincho.address, vestingAmount);
-    expect(await stakedLyra.balanceOf(karpincho.address)).eq(0); // nothing changed
-    expect(await c.lyraToken.balanceOf(karpincho.address)).eq(preBalance.add(vestingAmount)); // nothing changed
+    await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
+    expect(await stakedLyra.balanceOf(alice.address)).eq(0); // nothing changed
+    expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance.add(vestingAmount)); // nothing changed
   });
 });

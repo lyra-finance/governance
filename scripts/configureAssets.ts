@@ -602,6 +602,8 @@ async function main(): Promise<void> {
       underlyingAsset: LYRA_STAKING_PROXY,
     },
   ]);
+
+
   //
   // const tx = await c.configureAssets([
   //   {

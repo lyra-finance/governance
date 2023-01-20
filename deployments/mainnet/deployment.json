@@ -2,5 +2,13 @@
   "LyraToken": {
     "address": "0x01ba67aac7f75f647d94220cc98fb30fcc5105bf",
     "blockNumber": 12745755
+  },
+  "LyraSafetyModuleMigration": {
+    "address": "0x857bC2e9dCb0E3b831763390e351470a3CCCBBfa",
+    "blockNumber": 16408926
+  },
+  "LyraSafetyModuleProxy": {
+    "address": "0xCb9f85730f57732fc899fb158164b9Ed60c77D49",
+    "blockNumber": 16408825
   }
 }

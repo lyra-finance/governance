@@ -22,5 +22,9 @@
   "MultiDistributor": {
     "address": "0x019F0233C0277B9422FCDb1213B09C86f5f27D87",
     "blockNumber": 19431890
+  },
+  "TokenMigrator": {
+    "address": "0x0474bE53472280f96027b901C0367d2aC7aD539f",
+    "blockNumber": 67635094
   }
 }
