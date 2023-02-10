@@ -28,6 +28,7 @@
     "deploy:token:kovan": "hardhat run scripts/deployToken.ts --network kovan",
     "deploy:token:local": "hardhat run scripts/deployToken.ts --network local",
     "deploy:distributor:optimism-mainnet": "hardhat run scripts/deployDistributor.ts --network optimism-mainnet",
+    "deploy:distributor:arbitrum-mainnet": "hardhat run scripts/deployDistributor.ts --network arbitrum-mainnet",
     "deploy:distributor:optimism-kovan": "hardhat run scripts/deployDistributor.ts --network optimism-kovan",
     "deploy:distributor:local": "hardhat run scripts/deployDistributor.ts --network local",
     "deploy:multisender:optimism-mainnet": "hardhat run scripts/deployMultisender.ts --network optimism-mainnet",

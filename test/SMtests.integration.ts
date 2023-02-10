@@ -85,9 +85,7 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
 
     await stakedLyra.connect(alice).cooldown();
 
-    await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith(
-      "INSUFFICIENT_COOLDOWN",
-    );
+    await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith("INSUFFICIENT_COOLDOWN");
 
     await fastForward((await stakedLyra.COOLDOWN_SECONDS()).toNumber());
 

@@ -1,4 +1,4 @@
-import { getFirstSigner } from "../helpers/helpers";
+import { etherscanVerification, getFirstSigner } from "../helpers/helpers";
 import { ContractId } from "./utils/store";
 import { validateBaseEnvs } from "./utils/validation";
 import { deployAndValidate } from "./utils/deployAndValidate";

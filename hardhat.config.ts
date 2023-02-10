@@ -45,6 +45,7 @@ const chainIds = {
   mainnet: 1,
   [`optimism-kovan`]: 69,
   [`optimism-mainnet`]: 10,
+  [`arbitrum-mainnet`]: 42161,
 };
 
 const privateKey = process.env.PK || "";
@@ -105,6 +106,7 @@ const config: HardhatUserConfig = {
     mainnet: createNetworkConfig("mainnet"),
     "optimism-kovan": createNetworkConfig("optimism-kovan"),
     "optimism-mainnet": createNetworkConfig("optimism-mainnet"),
+    "arbitrum-mainnet": createNetworkConfig("arbitrum-mainnet"),
   },
   mocha: {
     timeout: 1_000_000,

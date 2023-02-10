@@ -603,7 +603,6 @@ async function main(): Promise<void> {
     },
   ]);
 
-
   //
   // const tx = await c.configureAssets([
   //   {

@@ -10,12 +10,12 @@ import {
   toBN,
   toBytes32,
   WEEK_SEC,
-  ZERO_ADDRESS
+  ZERO_ADDRESS,
 } from "./utils";
-import {AaveGovernanceV2, Executor, InitializableAdminUpgradeabilityProxy, LyraSafetyModule} from "../typechain";
-import {expect} from "./utils/testSetup";
+import { AaveGovernanceV2, Executor, InitializableAdminUpgradeabilityProxy, LyraSafetyModule } from "../typechain";
+import { expect } from "./utils/testSetup";
 
-describe.only("GovernorBravo voting with stkLyra", function () {
+describe("GovernorBravo voting with stkLyra", function () {
   let admin: SignerWithAddress;
   let proxyAdmin: SignerWithAddress;
   let alice: SignerWithAddress;
@@ -46,7 +46,6 @@ describe.only("GovernorBravo voting with stkLyra", function () {
       (1000 * 60 * 60).toString(),
     )) as LyraSafetyModule;
 
-
     stakedLyraProxy = (await (
       await ethers.getContractFactory("InitializableAdminUpgradeabilityProxy")
     ).deploy()) as InitializableAdminUpgradeabilityProxy;
@@ -75,24 +74,23 @@ describe.only("GovernorBravo voting with stkLyra", function () {
       },
     ]);
 
-    await stakedLyra.stake(alice.address, toBN('650000'));
+    await stakedLyra.stake(alice.address, toBN("650000"));
 
     const governanceStrategy = await (
       await ethers.getContractFactory("LyraGovernanceStrategy")
     ).deploy(stakedLyra.address);
 
-    const aaveGovernance = await (
+    const aaveGovernance = (await (
       await ethers.getContractFactory("AaveGovernanceV2")
     ).deploy(
       governanceStrategy.address,
       5, // voting delay - can only start voting after this many blocks
       admin.address,
       [admin.address],
-    ) as AaveGovernanceV2;
+    )) as AaveGovernanceV2;
     console.log(aaveGovernance.address);
 
-
-    const executor = await (
+    const executor = (await (
       await ethers.getContractFactory("Executor")
     ).deploy(
       // admin
@@ -111,28 +109,22 @@ describe.only("GovernorBravo voting with stkLyra", function () {
       // vote differential: percentage of supply that `for` votes need to be over `against`
       650,
       // minimum quorum
-      650
-    ) as Executor;
+      650,
+    )) as Executor;
     console.log(executor.address);
 
     await aaveGovernance.authorizeExecutors([executor.address]);
 
-    await c.lyraToken.connect(admin).transfer(executor.address, toBN('1000'));
+    await c.lyraToken.connect(admin).transfer(executor.address, toBN("1000"));
 
     // Note: must have 6.5% of the total supply staked
-    const tx = await c.lyraToken.populateTransaction.transfer(alice.address, toBN('100'));
+    const tx = await c.lyraToken.populateTransaction.transfer(alice.address, toBN("100"));
 
     console.log("\ncreate proposal\n");
 
-    await aaveGovernance.connect(alice).create(
-      executor.address,
-      [c.lyraToken.address],
-      [0],
-      [''],
-      [tx.data as string],
-      [false],
-      toBytes32('')
-    )
+    await aaveGovernance
+      .connect(alice)
+      .create(executor.address, [c.lyraToken.address], [0], [""], [tx.data as string], [false], toBytes32(""));
 
     console.log("\nvoting\n");
 
@@ -154,8 +146,8 @@ describe.only("GovernorBravo voting with stkLyra", function () {
     await aaveGovernance.connect(admin).execute(0);
 
     // tokens are transferred successfully
-    expect(await c.lyraToken.balanceOf(alice.address)).eq(toBN('100'));
-    expect(await c.lyraToken.balanceOf(executor.address)).eq(toBN('900'));
+    expect(await c.lyraToken.balanceOf(alice.address)).eq(toBN("100"));
+    expect(await c.lyraToken.balanceOf(executor.address)).eq(toBN("900"));
   });
 
   beforeEach(async () => {
@@ -167,9 +159,8 @@ describe.only("GovernorBravo voting with stkLyra", function () {
   });
 });
 
-
 async function skipBlocks(n: number) {
-  for (let i=0;i<n;i++) {
+  for (let i = 0; i < n; i++) {
     await mineBlock();
   }
 }

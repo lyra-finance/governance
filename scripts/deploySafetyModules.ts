@@ -1,11 +1,11 @@
-import {etherscanVerification, getFirstSigner} from "../helpers/helpers";
+import { etherscanVerification, getFirstSigner } from "../helpers/helpers";
 import { ContractId } from "./utils/store";
 import { validateBaseEnvs, validateStakedLyraEnvs } from "./utils/validation";
 import { deployAndValidate } from "./utils/deployAndValidate";
 import * as path from "path";
-import {DAY_SEC, toBN} from "../test/utils";
-import {Contract} from "@ethersproject/contracts";
-import {InitializableAdminUpgradeabilityProxy} from "../typechain";
+import { DAY_SEC, toBN } from "../test/utils";
+import { Contract } from "@ethersproject/contracts";
+import { InitializableAdminUpgradeabilityProxy } from "../typechain";
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -78,7 +78,9 @@ async function main(): Promise<void> {
   // );
   // await tx.wait();
 
-  await etherscanVerification("0x857bC2e9dCb0E3b831763390e351470a3CCCBBfa", [
+  await etherscanVerification(
+    "0x857bC2e9dCb0E3b831763390e351470a3CCCBBfa",
+    [
       // IERC20 stakedToken
       lyraTokenAddress,
       // IERC20 rewardToken
@@ -92,9 +94,10 @@ async function main(): Promise<void> {
       // address emissionManager
       "0x8ef8eEEB39b21ECdDE451e6C539017DF24D14a19",
       // uint128 distributionDuration
-      distributionDuration
+      distributionDuration,
     ],
-    "contracts/stakedToken/LyraSafetyModule.sol:LyraSafetyModule");
+    "contracts/stakedToken/LyraSafetyModule.sol:LyraSafetyModule",
+  );
 
   //
   // // USDC safety module and proxy
