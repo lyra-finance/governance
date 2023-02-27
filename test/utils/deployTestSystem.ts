@@ -1,23 +1,15 @@
 import { Signer } from "ethers";
 import { ethers } from "hardhat";
-import { DelegateRegistry, Lyra, TestStakedToken, TestRewardsVault } from "../../typechain";
-import { toBN, ZERO_ADDRESS } from "./index";
+import { Lyra, TestStakedToken, TestRewardsVault } from "../../typechain";
+import { toBN } from "./index";
 
 export type TestSystemContractsType = {
   lyraToken: Lyra;
-  test: {
-    delegateRegistry: DelegateRegistry;
-    testRewardsVault: TestRewardsVault;
-    stakedToken: TestStakedToken;
-  };
+  stakedToken: TestStakedToken;
 };
 
 export async function deployTestContracts(deployer: Signer): Promise<TestSystemContractsType> {
   console.log("Deploying all contracts for test...");
-
-  const delegateRegistry = (await (await ethers.getContractFactory("DelegateRegistry"))
-    .connect(deployer)
-    .deploy()) as DelegateRegistry;
 
   const lyraToken = (await (await ethers.getContractFactory("Lyra"))
     .connect(deployer)
@@ -41,10 +33,6 @@ export async function deployTestContracts(deployer: Signer): Promise<TestSystemC
 
   return {
     lyraToken,
-    test: {
-      delegateRegistry,
-      testRewardsVault,
-      stakedToken,
-    },
+    stakedToken,
   };
 }

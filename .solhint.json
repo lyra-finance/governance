@@ -5,7 +5,7 @@
     "ordering": "warn",
     "no-inline-assembly": "off",
     "code-complexity": ["error", 7],
-    "compiler-version": ["error", "0.7.5"],
+    "compiler-version": ["warn", "0.7.5", "0.8.10"],
     "const-name-snakecase": "off",
     "var-name-mixedcase": "off",
     "constructor-syntax": "error",

@@ -47,12 +47,6 @@ export const runTaskWithRetry = async (task: string, params: any, times: number,
 
 export function getDeployer(pk?: string) {
   const provider = new hre.ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-  provider.getGasPrice = async () => {
-    return hre.ethers.BigNumber.from(process.env.GAS_PRICE);
-  };
-  provider.estimateGas = async () => {
-    return hre.ethers.BigNumber.from(process.env.GAS_LIMIT);
-  };
 
   const deployer = new hre.ethers.Wallet(String(pk || process.env.PK), provider);
   console.log("deploying with:", deployer.address);

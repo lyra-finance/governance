@@ -37,7 +37,6 @@ contract LyraGovernanceStrategy is IGovernanceStrategy {
    * @return total supply at blockNumber
    **/
   function getTotalPropositionSupplyAt(uint256 blockNumber) public view override returns (uint256) {
-    // TODO: subtract reward_vault balance
     return IERC20(STK_LYRA).totalSupplyAt(blockNumber);
   }
 

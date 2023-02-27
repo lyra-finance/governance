@@ -15,6 +15,7 @@ import { SafeERC20 } from "@aave/aave-stake-v2/contracts/lib/SafeERC20.sol";
 import { VersionedInitializable } from "@aave/aave-stake-v2/contracts/utils/VersionedInitializable.sol";
 import { AaveDistributionManager } from "@aave/aave-stake-v2/contracts/stake/AaveDistributionManager.sol";
 import { GovernancePowerWithSnapshot } from "@aave/aave-stake-v2/contracts/lib/GovernancePowerWithSnapshot.sol";
+import "hardhat/console.sol";
 
 /**
  * @title StakedToken V3
@@ -144,6 +145,9 @@ contract VirtualAAVEStakedToken is
     //solium-disable-next-line
     uint256 cooldownStartTimestamp = stakersCooldowns[msg.sender];
     require(block.timestamp > cooldownStartTimestamp.add(COOLDOWN_SECONDS), "INSUFFICIENT_COOLDOWN");
+    console.log(cooldownStartTimestamp);
+    console.log(block.timestamp.sub(cooldownStartTimestamp.add(COOLDOWN_SECONDS)));
+    console.log(UNSTAKE_WINDOW);
     require(
       block.timestamp.sub(cooldownStartTimestamp.add(COOLDOWN_SECONDS)) <= UNSTAKE_WINDOW,
       "UNSTAKE_WINDOW_FINISHED"

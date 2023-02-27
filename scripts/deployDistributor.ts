@@ -1,5 +1,4 @@
-import { etherscanVerification, getFirstSigner } from "../helpers/helpers";
-import { ContractId } from "./utils/store";
+import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
@@ -13,7 +12,7 @@ async function main(): Promise<void> {
   await deployAndValidate(
     "MultiDistributor",
     deployer,
-    ContractId.MultiDistributor,
+    "MultiDistributor",
     [],
     "contracts/token/MultiDistributor.sol:MultiDistributor",
   );

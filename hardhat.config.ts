@@ -50,7 +50,6 @@ const chainIds = {
 
 const privateKey = process.env.PK || "";
 const infuraApiKey = process.env.INFURA_API_KEY || "";
-const gasPrice = parseInt(process.env.GAS_PRICE || "1000000000");
 const etherscanApiKey = process.env.ETHERSCAN_KEY || "";
 
 console.log({ etherscanApiKey });
@@ -68,7 +67,6 @@ function createNetworkConfig(network: keyof typeof chainIds): NetworkUserConfig 
       accounts: privateKey ? [privateKey] : { mnemonic: "" },
       chainId: chainIds[network],
       url,
-      gasPrice,
     };
   }
 }
