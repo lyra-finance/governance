@@ -1,1 +1,30 @@
-{}
+{
+  "Lyra": {
+    "address": "0x553c838f4768da99995Ff9dec459c97a02F3cF15",
+    "blockNumber": 8574930
+  },
+  "stkLyraImplementation": {
+    "address": "0x72D1aCe1bD652A7F245F344f7A2ef9e3c97E8206",
+    "blockNumber": 8574938
+  },
+  "ProxyAdmin": {
+    "address": "0xc4BEce60569C6f0Bbdd41579F2388C297a4999ca",
+    "blockNumber": 8574942
+  },
+  "stkLyra": {
+    "address": "0xF025C696B4d9944b3cD16a557f6cB10DBC9E6089",
+    "blockNumber": 8574947
+  },
+  "LyraGovernanceStrategy": {
+    "address": "0x226D30BA571B052ab8855193C49C9A0F4cc7079A",
+    "blockNumber": 8574953
+  },
+  "LyraGovernanceV2": {
+    "address": "0xbdC164246e31585E237bfA338a4B7baa5cfEFe4b",
+    "blockNumber": 8574956
+  },
+  "Executor": {
+    "address": "0x115B133B11940bbda1Af6c7D6F6B2D93DdA437ed",
+    "blockNumber": 8574959
+  }
+}

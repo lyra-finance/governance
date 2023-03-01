@@ -41,11 +41,23 @@ export function loadArgsAndEnv(argv: string[]) {
 loadArgsAndEnv(process.argv);
 
 const chainIds = {
-  kovan: 42,
   mainnet: 1,
-  [`optimism-kovan`]: 69,
+  goerli: 5,
   [`optimism-mainnet`]: 10,
   [`arbitrum-mainnet`]: 42161,
+  [`arbitrum-goerli`]: 421613,
+  [`optimism-goerli`]: 420,
+};
+
+const GWEI = 1000000000;
+
+const gasPrices = {
+  mainnet: 10 * GWEI,
+  goerli: GWEI,
+  [`optimism-mainnet`]: GWEI,
+  [`arbitrum-mainnet`]: GWEI,
+  [`arbitrum-goerli`]: GWEI,
+  [`optimism-goerli`]: GWEI,
 };
 
 const privateKey = process.env.PK || "";
@@ -60,12 +72,14 @@ function createNetworkConfig(network: keyof typeof chainIds): NetworkUserConfig 
     return {
       accounts: privateKey ? [privateKey] : { mnemonic: "" },
       chainId: chainIds[network],
+      gasPrice: "auto",
       url,
     };
   } else {
     return {
       accounts: privateKey ? [privateKey] : { mnemonic: "" },
       chainId: chainIds[network],
+      gasPrice: GWEI,
       url,
     };
   }
@@ -99,10 +113,10 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: "test test test test test test test test test test test junk",
       },
+      gasPrice: 10000000,
     },
-    kovan: createNetworkConfig("kovan"),
+    goerli: createNetworkConfig("goerli"),
     mainnet: createNetworkConfig("mainnet"),
-    "optimism-kovan": createNetworkConfig("optimism-kovan"),
     "optimism-mainnet": createNetworkConfig("optimism-mainnet"),
     "arbitrum-mainnet": createNetworkConfig("arbitrum-mainnet"),
   },
