@@ -38,7 +38,6 @@ describe("GovernorBravo voting with stkLyra", function () {
       await ethers.getContractFactory("LyraSafetyModule")
     ).deploy(
       c.lyraToken.address,
-      c.lyraToken.address,
       COOLDOWN_SECONDS,
       UNSTAKE_WINDOW,
       admin.address,
@@ -74,11 +73,11 @@ describe("GovernorBravo voting with stkLyra", function () {
       },
     ]);
 
-    await stakedLyra.stake(alice.address, toBN("650000"));
+    await stakedLyra.stake(alice.address, toBN("650000")); // 10M total lyra, so 6.5M to pass vote
 
     const governanceStrategy = await (
       await ethers.getContractFactory("LyraGovernanceStrategy")
-    ).deploy(stakedLyra.address);
+    ).deploy(c.lyraToken.address, stakedLyra.address);
 
     const aaveGovernance = (await (
       await ethers.getContractFactory("AaveGovernanceV2")
@@ -88,7 +87,6 @@ describe("GovernorBravo voting with stkLyra", function () {
       admin.address,
       [admin.address],
     )) as AaveGovernanceV2;
-    console.log(aaveGovernance.address);
 
     const executor = (await (
       await ethers.getContractFactory("Executor")
@@ -107,11 +105,11 @@ describe("GovernorBravo voting with stkLyra", function () {
       // vote duration
       10, // number of blocks vote lasts after the voting delay
       // vote differential: percentage of supply that `for` votes need to be over `against`
-      650,
-      // minimum quorum
-      650,
+      // (100 = basically free 1% voting against)
+      100,
+      // minimum quorum (at least 2% must vote for this to be able to pass)
+      200,
     )) as Executor;
-    console.log(executor.address);
 
     await aaveGovernance.authorizeExecutors([executor.address]);
 
@@ -120,26 +118,26 @@ describe("GovernorBravo voting with stkLyra", function () {
     // Note: must have 6.5% of the total supply staked
     const tx = await c.lyraToken.populateTransaction.transfer(alice.address, toBN("100"));
 
-    console.log("\ncreate proposal\n");
+    console.log("- create proposal");
 
     await aaveGovernance
       .connect(alice)
       .create(executor.address, [c.lyraToken.address], [0], [""], [tx.data as string], [false], toBytes32(""));
 
-    console.log("\nvoting\n");
+    console.log("- voting");
 
     // cannot vote before the waiting period ends
     await expect(aaveGovernance.connect(alice).submitVote(0, true)).revertedWith("VOTING_CLOSED");
     await skipBlocks(6);
     await aaveGovernance.connect(alice).submitVote(0, true);
 
-    console.log("\nqueue\n");
+    console.log("- queue");
     // cannot queue before voting period ends
     await expect(aaveGovernance.connect(admin).queue(0)).revertedWith("INVALID_STATE_FOR_QUEUE");
     await skipBlocks(10);
     await aaveGovernance.connect(admin).queue(0);
 
-    console.log("\nexecute\n");
+    console.log("- execute");
     // canot execute before timelock ends
     await expect(aaveGovernance.connect(admin).execute(0)).revertedWith("TIMELOCK_NOT_FINISHED");
     await fastForward(8 * DAY_SEC);

@@ -60,52 +60,8 @@ $ yarn coverage
 
 ### Deploy
 
-Create `.env` file and complete the variables:
+Add a `.env.private` file to `deployments/{network}/` for the network where you want to deploy
 
 ```sh
 cp scripts/.env.example scripts/.env
-```
-
-For a full step by step contracts deployment, follow [these](./scripts/README.md) instructions.
-
-#### Lyra Token
-
-Deploy the token contract to Mainnet Network:
-
-```sh
-$ yarn deploy:mainnet
-```
-
-Kovan example:
-
-```sh
-$ yarn deploy:kovan
-```
-
-#### StakedLyra implementation and Proxy
-
-Deploy the StakedLyra implementation contract and Proxy to Mainnet Network:
-
-```sh
-$ yarn deploy:stakedLyra:mainnet
-```
-
-Kovan example:
-
-```sh
-$ yarn deploy:stakedLyra:kovan
-```
-
-#### StakingRewards for Liquidity Certificate
-
-Deploy the StakingRewards contract to Optimism Mainnet Network:
-
-```sh
-$ yarn deploy:stakingRewards:mainnetOvm
-```
-
-Optimism Kovan example:
-
-```sh
-$ yarn deploy:stakingRewards:kovanOvm
 ```

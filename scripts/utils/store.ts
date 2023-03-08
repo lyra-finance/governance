@@ -3,25 +3,35 @@ import { join } from "path";
 import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 
-export const getDb = () => low(new FileSync(join(__dirname, "../../deployments", hre.network.name, "deployment.json")));
+export function getDb(networkOverride?: string) {
+  return low(
+    new FileSync(join(__dirname, "../../deployments", networkOverride || hre.network.name, "deployment.json")),
+  );
+}
 
-export const getExternalsDb = () =>
-  low(new FileSync(join(__dirname, "../../deployments", hre.network.name, "externals.json")));
+export function getExternalsDb(networkOverride?: string) {
+  return low(new FileSync(join(__dirname, "../../deployments", networkOverride || hre.network.name, "externals.json")));
+}
 
-export const getContract = (contractId: string): { address: string; blockNumber: number | undefined } =>
-  getDb().get(`${contractId}`).value();
+export function getContractAddress(contractId: string, networkOverride?: string) {
+  return getDb(networkOverride).get(`${contractId}`).value();
+}
 
-export const getExternalContractAddress = (contractId: string) => getExternalsDb().get(`${contractId}`).value();
+export function getExternalContractAddress(contractId: string, networkOverride?: string) {
+  return getExternalsDb(networkOverride).get(`${contractId}`).value();
+}
 
-export const registerContract = (
+export function registerContract(
   contractId: string,
   newContract: { address: string; blockNumber: number | undefined },
-) => getDb().set(`${contractId}`, newContract).write();
+) {
+  return getDb().set(`${contractId}`, newContract).write();
+}
 
-export const appendNewContract = (
+export function appendNewContract(
   contractId: string,
   newContract: { address: string; blockNumber: number | undefined },
-) => {
+) {
   let contracts = getDb().get(`${contractId}`).value();
 
   if (!contracts) {
@@ -31,4 +41,4 @@ export const appendNewContract = (
   return getDb()
     .set(`${contractId}`, [...contracts, newContract])
     .write();
-};
+}

@@ -2,7 +2,6 @@ import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
 import { ethers } from "hardhat";
 import { DAY_SEC, HOUR_SEC, toBN, YEAR_SEC } from "../test/utils";
-import { AaveGovernanceV2, Executor, Lyra } from "../typechain";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
 async function main(): Promise<void> {
@@ -86,7 +85,7 @@ async function main(): Promise<void> {
     "LyraGovernanceStrategy",
     deployer,
     "LyraGovernanceStrategy",
-    [stkLyra.address],
+    [lyraToken.address, stkLyra.address],
     "contracts/LyraGovernanceStrategy.sol:LyraGovernanceStrategy",
   );
 
@@ -103,7 +102,7 @@ async function main(): Promise<void> {
     "contracts/LyraGovernanceV2.sol:LyraGovernanceV2",
   );
 
-  const executor = await deployAndValidate(
+  await deployAndValidate(
     "Executor",
     deployer,
     "Executor",

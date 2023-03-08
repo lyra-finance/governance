@@ -49,16 +49,16 @@ const chainIds = {
   [`optimism-goerli`]: 420,
 };
 
-const GWEI = 1000000000;
-
-const gasPrices = {
-  mainnet: 10 * GWEI,
-  goerli: GWEI,
-  [`optimism-mainnet`]: GWEI,
-  [`arbitrum-mainnet`]: GWEI,
-  [`arbitrum-goerli`]: GWEI,
-  [`optimism-goerli`]: GWEI,
-};
+// const GWEI = 1000000000;
+//
+// const gasPrices = {
+//   mainnet: 10 * GWEI,
+//   goerli: GWEI,
+//   [`optimism-mainnet`]: GWEI,
+//   [`arbitrum-mainnet`]: GWEI,
+//   [`arbitrum-goerli`]: GWEI,
+//   [`optimism-goerli`]: GWEI,
+// };
 
 const privateKey = process.env.PK || "";
 const infuraApiKey = process.env.INFURA_API_KEY || "";
@@ -68,21 +68,12 @@ console.log({ etherscanApiKey });
 
 function createNetworkConfig(network: keyof typeof chainIds): NetworkUserConfig {
   const url: string = "https://" + network + ".infura.io/v3/" + infuraApiKey;
-  if (["optimism-kovan", "optimism-mainnet"].includes(network)) {
-    return {
-      accounts: privateKey ? [privateKey] : { mnemonic: "" },
-      chainId: chainIds[network],
-      gasPrice: "auto",
-      url,
-    };
-  } else {
-    return {
-      accounts: privateKey ? [privateKey] : { mnemonic: "" },
-      chainId: chainIds[network],
-      gasPrice: GWEI,
-      url,
-    };
-  }
+  return {
+    accounts: privateKey ? [privateKey] : { mnemonic: "" },
+    chainId: chainIds[network],
+    gasPrice: "auto",
+    url,
+  };
 }
 
 const config: HardhatUserConfig = {
@@ -117,8 +108,12 @@ const config: HardhatUserConfig = {
     },
     goerli: createNetworkConfig("goerli"),
     mainnet: createNetworkConfig("mainnet"),
+
     "optimism-mainnet": createNetworkConfig("optimism-mainnet"),
     "arbitrum-mainnet": createNetworkConfig("arbitrum-mainnet"),
+
+    "arbitrum-goerli": createNetworkConfig("arbitrum-goerli"),
+    "optimism-goerli": createNetworkConfig("optimism-goerli"),
   },
   mocha: {
     timeout: 1_000_000,

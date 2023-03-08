@@ -86,12 +86,14 @@ describe("LyraDistributor", function () {
       "test",
     );
 
-    console.log(
-      await distributor.getClaimableForAddresses([signers[1].address, signers[2].address], [lyraToken.address]),
+    const res = await distributor.getClaimableForAddresses(
+      [signers[1].address, signers[2].address],
+      [lyraToken.address],
     );
+    expect(res.claimed.length).eq(2);
+    expect(res.claimable.length).eq(2);
 
     // will ignore zero address and random signer address, and still succeed
-    const x = await distributor.connect(signers[2]).claim([lyraToken.address, ZERO_ADDRESS, signers[1].address]);
-    console.log("Claim gas:", (await x.wait()).gasUsed.toString());
+    await distributor.connect(signers[2]).claim([lyraToken.address, ZERO_ADDRESS, signers[1].address]);
   });
 });

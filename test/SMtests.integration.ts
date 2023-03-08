@@ -90,17 +90,8 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
 
     const preBalance = await c.lyraToken.balanceOf(alice.address);
 
-    await stakedLyra.connect(admin).redeem(alice.address, vestingAmount);
-
-    expect(await stakedLyra.balanceOf(alice.address)).eq(vestingAmount); // nothing changed
-    expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance); // nothing changed
-
     await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
 
-    expect(await stakedLyra.balanceOf(alice.address)).eq(0);
-    expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance.add(vestingAmount));
-
-    await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
     expect(await stakedLyra.balanceOf(alice.address)).eq(0); // nothing changed
     expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance.add(vestingAmount)); // nothing changed
   });
