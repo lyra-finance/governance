@@ -50,14 +50,6 @@ Run the tests:
 $ yarn test
 ```
 
-### Coverage
-
-Generate the code coverage report:
-
-```sh
-$ yarn coverage
-```
-
 ### Deploy
 
 Add a `.env.private` file to `deployments/{network}/` for the network where you want to deploy
