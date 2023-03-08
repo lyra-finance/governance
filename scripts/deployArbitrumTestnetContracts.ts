@@ -16,26 +16,20 @@ async function main(): Promise<void> {
     throw Error("Missing executor");
   }
 
-  const arbiBridgeExecutor = await deployAndValidate(
-    "ArbitrumBridgeExecutor",
-    deployer,
-    "arbitrumBridgeExecutor",
-    [
-      // ethereumGovernanceExecutor
-      ethereumGovernanceExecutor,
-      // delay
-      20,
-      // gracePeriod
-      5 * DAY_SEC,
-      // minimumDelay
-      1,
-      // maximumDelay
-      14 * DAY_SEC,
-      // guardian
-      deployer.address,
-    ],
-    "contracts/AaveImports_8_10.sol:ArbitrumBridgeExecutor",
-  );
+  const arbiBridgeExecutor = await deployAndValidate("ArbitrumBridgeExecutor", deployer, "arbitrumBridgeExecutor", [
+    // ethereumGovernanceExecutor
+    ethereumGovernanceExecutor,
+    // delay
+    20,
+    // gracePeriod
+    5 * DAY_SEC,
+    // minimumDelay
+    1,
+    // maximumDelay
+    14 * DAY_SEC,
+    // guardian
+    deployer.address,
+  ]);
 
   console.log(`- ArbiBridgeExecutor: ${arbiBridgeExecutor.address}`);
 

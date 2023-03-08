@@ -2,11 +2,7 @@ import hre from "hardhat";
 
 export const getFirstSigner = async () => (await hre.ethers.getSigners())[0];
 
-export async function etherscanVerification(
-  contractAddress: string,
-  args: (string | string[])[],
-  contractPath?: string,
-) {
+export async function etherscanVerification(contractAddress: string, args: any[]) {
   if (hre.network.name === "local" || hre.network.name === "local-ovm") {
     return;
   }
@@ -16,7 +12,6 @@ export async function etherscanVerification(
     {
       address: contractAddress,
       constructorArguments: args,
-      contract: contractPath,
     },
     4,
     10000,

@@ -8,7 +8,6 @@ export async function deployAndValidate(
   deployer: Signer,
   contractId: string,
   args: any[],
-  contractPath?: string,
   overrides: any = {},
 ): Promise<Contract> {
   const factory = await ethers.getContractFactory(contractName, deployer);
@@ -26,7 +25,7 @@ export async function deployAndValidate(
 
   console.log(`- Address: ${instance.address}`);
 
-  await etherscanVerification(instance.address, args, contractPath);
+  await etherscanVerification(instance.address, args);
 
   return instance;
 }

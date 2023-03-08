@@ -50,15 +50,15 @@ const chainIds = {
 };
 
 // const GWEI = 1000000000;
-//
-// const gasPrices = {
-//   mainnet: 10 * GWEI,
-//   goerli: GWEI,
-//   [`optimism-mainnet`]: GWEI,
-//   [`arbitrum-mainnet`]: GWEI,
-//   [`arbitrum-goerli`]: GWEI,
-//   [`optimism-goerli`]: GWEI,
-// };
+
+const gasPrices = {
+  mainnet: "auto",
+  goerli: "auto",
+  [`optimism-mainnet`]: "auto",
+  [`arbitrum-mainnet`]: "auto",
+  [`arbitrum-goerli`]: "auto",
+  [`optimism-goerli`]: "auto",
+};
 
 const privateKey = process.env.PK || "";
 const infuraApiKey = process.env.INFURA_API_KEY || "";
@@ -71,7 +71,7 @@ function createNetworkConfig(network: keyof typeof chainIds): NetworkUserConfig 
   return {
     accounts: privateKey ? [privateKey] : { mnemonic: "" },
     chainId: chainIds[network],
-    gasPrice: "auto",
+    gasPrice: gasPrices[network],
     url,
   };
 }
@@ -104,7 +104,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: "test test test test test test test test test test test junk",
       },
-      gasPrice: 10000000,
+      gasPrice: "auto",
     },
     goerli: createNetworkConfig("goerli"),
     mainnet: createNetworkConfig("mainnet"),

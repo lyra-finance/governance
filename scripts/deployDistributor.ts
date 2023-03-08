@@ -9,13 +9,7 @@ async function main(): Promise<void> {
 
   const deployer = await getFirstSigner();
 
-  await deployAndValidate(
-    "MultiDistributor",
-    deployer,
-    "MultiDistributor",
-    [],
-    "contracts/token/MultiDistributor.sol:MultiDistributor",
-  );
+  await deployAndValidate("MultiDistributor", deployer, "MultiDistributor", []);
 }
 
 main()
