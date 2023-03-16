@@ -1,7 +1,7 @@
-import { getFirstSigner } from "../helpers/helpers";
-import { validateBaseEnvs } from "./utils/validation";
+import { getFirstSigner } from "../../helpers/helpers";
+import { validateBaseEnvs } from "../utils/validation";
 import { ethers } from "hardhat";
-import { toBN, toBytes32 } from "../test/utils";
+import { toBytes32 } from "../../test/utils";
 
 const GOV_ABI = [
   {
@@ -327,162 +327,6 @@ const GOV_ABI = [
     type: "function",
   },
 ];
-const LYRA_ABI = [
-  {
-    inputs: [
-      { internalType: "string", name: "name", type: "string" },
-      { internalType: "string", name: "symbol", type: "string" },
-      { internalType: "uint256", name: "supply", type: "uint256" },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "owner", type: "address" },
-      { indexed: true, internalType: "address", name: "spender", type: "address" },
-      { indexed: false, internalType: "uint256", name: "value", type: "uint256" },
-    ],
-    name: "Approval",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "from", type: "address" },
-      { indexed: true, internalType: "address", name: "to", type: "address" },
-      { indexed: false, internalType: "uint256", name: "value", type: "uint256" },
-    ],
-    name: "Transfer",
-    type: "event",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "owner", type: "address" },
-      { internalType: "address", name: "spender", type: "address" },
-    ],
-    name: "allowance",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "spender", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
-    ],
-    name: "approve",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "decimals",
-    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "spender", type: "address" },
-      { internalType: "uint256", name: "subtractedValue", type: "uint256" },
-    ],
-    name: "decreaseAllowance",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "spender", type: "address" },
-      { internalType: "uint256", name: "addedValue", type: "uint256" },
-    ],
-    name: "increaseAllowance",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "name",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "owner", type: "address" }],
-    name: "nonces",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "owner", type: "address" },
-      { internalType: "address", name: "spender", type: "address" },
-      { internalType: "uint256", name: "value", type: "uint256" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-      { internalType: "uint8", name: "v", type: "uint8" },
-      { internalType: "bytes32", name: "r", type: "bytes32" },
-      { internalType: "bytes32", name: "s", type: "bytes32" },
-    ],
-    name: "permit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "symbol",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "recipient", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
-    ],
-    name: "transfer",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "sender", type: "address" },
-      { internalType: "address", name: "recipient", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
-    ],
-    name: "transferFrom",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-];
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -490,16 +334,26 @@ async function main(): Promise<void> {
 
   const GOVV2_L1_GOERLI = "0x840c2Ceaa214287889FA7c8ef174EAcE85548E52";
   const EXE_L1_GOERLI = "0xd13B175e097285744A337F63a5d56dDEC3FfAfb1";
-  const LYRA_TOKEN = "0x553c838f4768da99995Ff9dec459c97a02F3cF15";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
-  const lyraToken = new ethers.Contract(LYRA_TOKEN, LYRA_ABI, deployer);
 
   const testAdddress = "0x15aDBea538f541271dA5E4436E41285e386E3336";
 
-  const tx = await lyraToken.populateTransaction.transfer(testAdddress, toBN("1000"));
+  // const tx = await deployer.populateTransaction({
+  //   to: testAdddress,
+  //   value: ethers.utils.parseEther('0.01'),
+  // });
 
-  const tx1 = await lyraGov.create(EXE_L1_GOERLI, [LYRA_TOKEN], [0], [""], [tx.data as string], [false], toBytes32(""));
+  // const tx1 = await lyraGov.create(EXE_L1_GOERLI, [testAdddress], [ethers.utils.parseEther('0.01')], [""], [""], [false], toBytes32(""));
+  const tx1 = await lyraGov.create(
+    EXE_L1_GOERLI,
+    [testAdddress],
+    [ethers.utils.parseEther("0.01")],
+    [""],
+    [""],
+    [false],
+    toBytes32(""),
+  );
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
 

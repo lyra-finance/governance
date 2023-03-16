@@ -1,1 +1,6 @@
-{}
+{
+  "arbitrumBridgeExecutor": {
+    "address": "0x631a0389b6a03E3C2724c0231e0d2Ac0e1559364",
+    "blockNumber": 11691282
+  }
+}

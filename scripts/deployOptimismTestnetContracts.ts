@@ -4,6 +4,8 @@ import { DAY_SEC } from "../test/utils";
 import { getContractAddress } from "./utils/store";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
+const OVM_L2_MESSENGER = "0x4200000000000000000000000000000000000007";
+
 async function main(): Promise<void> {
   validateBaseEnvs();
 
@@ -17,6 +19,8 @@ async function main(): Promise<void> {
   }
 
   const opBridgeExecutor = await deployAndValidate("OptimismBridgeExecutor", deployer, "optimismBridgeExecutor", [
+    //Optimism L2CrossDomainMessenger
+    OVM_L2_MESSENGER,
     // ethereumGovernanceExecutor
     ethereumGovernanceExecutor,
     // delay

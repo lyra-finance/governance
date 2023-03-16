@@ -1,7 +1,6 @@
-import { getFirstSigner } from "../helpers/helpers";
-import { validateBaseEnvs } from "./utils/validation";
+import { getFirstSigner } from "../../helpers/helpers";
+import { validateBaseEnvs } from "../utils/validation";
 import { ethers } from "hardhat";
-import { toBytes32 } from "../test/utils";
 
 const GOV_ABI = [
   {
@@ -331,29 +330,10 @@ const GOV_ABI = [
 async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
-
   const GOVV2_L1_GOERLI = "0x840c2Ceaa214287889FA7c8ef174EAcE85548E52";
-  const EXE_L1_GOERLI = "0xd13B175e097285744A337F63a5d56dDEC3FfAfb1";
-
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
 
-  const testAdddress = "0x15aDBea538f541271dA5E4436E41285e386E3336";
-
-  // const tx = await deployer.populateTransaction({
-  //   to: testAdddress,
-  //   value: ethers.utils.parseEther('0.01'),
-  // });
-
-  // const tx1 = await lyraGov.create(EXE_L1_GOERLI, [testAdddress], [ethers.utils.parseEther('0.01')], [""], [""], [false], toBytes32(""));
-  const tx1 = await lyraGov.create(
-    EXE_L1_GOERLI,
-    [testAdddress],
-    [ethers.utils.parseEther("0.01")],
-    [""],
-    [""],
-    [false],
-    toBytes32(""),
-  );
+  const tx1 = await lyraGov.submitVote(20, true);
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
 

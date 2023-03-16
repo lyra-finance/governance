@@ -1,1 +1,6 @@
-{}
+{
+  "optimismBridgeExecutor": {
+    "address": "0xbe95dfcaa49fD4bB2178F6725F6A2fF46AC53e0B",
+    "blockNumber": 6760272
+  }
+}

@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 
   console.log(`- ArbiBridgeExecutor: ${arbiBridgeExecutor.address}`);
 
-  console.log("\n****** Finished Vote ******");
+  console.log("\n****** Finished Deployment ******");
 }
 
 main()
