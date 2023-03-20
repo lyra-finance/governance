@@ -40,58 +40,61 @@ async function main(): Promise<void> {
   const stkLyra = new ethers.Contract(proxy.address, stkLyraImplementation.interface, deployer);
 
   console.log("\nconfiguring stkLyra and seeding initial rewards");
-  await lyraToken.approve(stkLyra.address, toBN("100000"));
+  await lyraToken.approve(stkLyra.address, toBN("25000000"), { gasLimit: 1000000 });
 
-  await stkLyra.stake(deployer.address, toBN("100000"));
-  await stkLyra.configureAssets([
-    {
-      emissionPerSecond: toBN("0.03"),
-      totalStaked: toBN("100000"),
-      underlyingAsset: stkLyra.address,
-    },
-  ]);
+  await stkLyra.stake(deployer.address, toBN("25000000"), { gasLimit: 1000000 });
+  await stkLyra.configureAssets(
+    [
+      {
+        emissionPerSecond: toBN("0.03"),
+        totalStaked: toBN("25000000"),
+        underlyingAsset: stkLyra.address,
+      },
+    ],
+    { gasLimit: 1000000 },
+  );
   // Approve some stkLyra for rewards being claimed
-  await stkLyra.approve(stkLyra.address, toBN("100000"));
+  await stkLyra.approve(stkLyra.address, toBN("25000000"), { gasLimit: 1000000 });
 
   console.log("=== Token setup done ===");
 
   // Add voting contracts and executors
 
-  const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
-    lyraToken.address,
-    stkLyra.address,
-  ]);
+  // const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
+  //   lyraToken.address,
+  //   stkLyra.address,
+  // ]);
 
-  const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
-    governanceStrategy.address,
-    5, // voting delay - can only start voting after this many blocks
-    deployer.address,
-    [deployer.address],
-  ]);
+  // const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
+  //   governanceStrategy.address,
+  //   5, // voting delay - can only start voting after this many blocks
+  //   deployer.address,
+  //   [deployer.address],
+  // ]);
 
-  await deployAndValidate("Executor", deployer, "Executor", [
-    // admin
-    lyraGovernance.address,
-    // delay - time before being able to vote (sec)
-    10,
-    // grace period - time after `delay` while a proposal can be executed
-    5 * DAY_SEC,
-    // min delay
-    1,
-    // max delay
-    12 * DAY_SEC,
-    // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
-    100,
-    // vote duration (blocks, so ~10min)
-    40, // number of blocks vote lasts after the voting delay
-    // vote differential: percentage of supply that `for` votes need to be over `against`
-    // (100 = basically free 1% voting against)
-    100,
-    // minimum quorum (at least 2% must vote for this to be able to pass)
-    200,
-  ]);
+  // await deployAndValidate("Executor", deployer, "Executor", [
+  //   // admin
+  //   lyraGovernance.address,
+  //   // delay - time before being able to vote (sec)
+  //   10,
+  //   // grace period - time after `delay` while a proposal can be executed
+  //   5 * DAY_SEC,
+  //   // min delay
+  //   1,
+  //   // max delay
+  //   12 * DAY_SEC,
+  //   // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
+  //   100,
+  //   // vote duration (blocks, so ~10min)
+  //   40, // number of blocks vote lasts after the voting delay
+  //   // vote differential: percentage of supply that `for` votes need to be over `against`
+  //   // (100 = basically free 1% voting against)
+  //   100,
+  //   // minimum quorum (at least 2% must vote for this to be able to pass)
+  //   200,
+  // ]);
 
-  console.log("\n****** Finished Deployment ******");
+  // console.log("\n****** Finished Deployment ******");
 }
 
 main()
