@@ -333,7 +333,7 @@ async function main(): Promise<void> {
   const GOVV2_L1_GOERLI = "0x840c2Ceaa214287889FA7c8ef174EAcE85548E52";
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
 
-  const tx1 = await lyraGov.execute(20);
+  const tx1 = await lyraGov.execute(42);
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
 

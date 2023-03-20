@@ -506,18 +506,20 @@ async function main(): Promise<void> {
   const GOVV2_L1_GOERLI = "0x840c2Ceaa214287889FA7c8ef174EAcE85548E52";
   // const EXE_L1_GOERLI = "0xd13B175e097285744A337F63a5d56dDEC3FfAfb1";
   const EXE_L2_ARBI_GOERLI = "0x3662A8173ac2eBe57D4f2c22c34A7e7dD84a969C";
-  const DAI_TOKEN = "0x553c838f4768da99995Ff9dec459c97a02F3cF15";
+  const EXE_L2_OP_GOERLI = "0xbe95dfcaa49fD4bB2178F6725F6A2fF46AC53e0B";
+  const DAI_TOKEN_ARBI = "0x553c838f4768da99995Ff9dec459c97a02F3cF15";
+  const DAI_TOKEN_OP = "0x25d61fA5c23002C489455efDf00bFC1FBB2224df";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
-  const daiToken = new ethers.Contract(DAI_TOKEN, DAI_ABI, deployer);
+  const daiToken = new ethers.Contract(DAI_TOKEN_OP, DAI_ABI, deployer);
 
   const testAdddress = "0x15aDBea538f541271dA5E4436E41285e386E3336";
 
   const tx = await daiToken.populateTransaction.transfer(testAdddress, toBN("1000"));
 
   const tx1 = await lyraGov.create(
-    EXE_L2_ARBI_GOERLI,
-    [DAI_TOKEN],
+    EXE_L2_OP_GOERLI,
+    [DAI_TOKEN_OP],
     [0],
     [""],
     [tx.data as string],
