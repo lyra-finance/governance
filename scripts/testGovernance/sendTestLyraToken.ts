@@ -488,8 +488,8 @@ async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
 
-  const GOVV2_L1_GOERLI = "0x840c2Ceaa214287889FA7c8ef174EAcE85548E52";
-  const EXE_L1_GOERLI = "0xd13B175e097285744A337F63a5d56dDEC3FfAfb1";
+  const GOVV2_L1_GOERLI = "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8";
+  const EXE_L1_GOERLI = "0x89BF04717E051aA9e1DFE3826eddA6Bcc34dd7d7";
   const LYRA_TOKEN = "0x553c838f4768da99995Ff9dec459c97a02F3cF15";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
