@@ -1,30 +1,30 @@
 {
   "Lyra": {
-    "address": "0x6045cFB2AbE52AF810405ad9bFd15053628359BF",
-    "blockNumber": 8689827
+    "address": "0x81dC2c079057Ec6Ce15F0f83F8209A529f4d1D0c",
+    "blockNumber": 8690239
   },
   "stkLyraImplementation": {
-    "address": "0x5e66dDd550631BcB7E71864E9E45f57e1Ae2D5Ed",
-    "blockNumber": 8689829
+    "address": "0x8BaC14983D7793A2814B128C0e5093cC18aCb02C",
+    "blockNumber": 8690242
   },
   "ProxyAdmin": {
-    "address": "0x649e1266CDA8dAF7913A6b00Ee449FD23412928A",
-    "blockNumber": 8689832
+    "address": "0x56dfA43938B781D329a4fC6Bd21d42278Ef14c46",
+    "blockNumber": 8690245
   },
   "stkLyra": {
-    "address": "0xb3A2575856a8A2989AA6509C04d5F74e197Dfa3e",
-    "blockNumber": 8689833
+    "address": "0xd7947f2651304DA4cC360b9E81b453f26FAaD4B1",
+    "blockNumber": 8690247
   },
   "LyraGovernanceStrategy": {
-    "address": "0x0434fb40d99a57361cd86D6B3dc9b4518f2a3Ea3",
-    "blockNumber": 8685305
+    "address": "0x803FFD0f5Dbb11B3582523f3Fec69619E05eBD3e",
+    "blockNumber": 8690249
   },
   "LyraGovernanceV2": {
-    "address": "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8",
-    "blockNumber": 8685306
+    "address": "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8",
+    "blockNumber": 8690251
   },
   "Executor": {
-    "address": "0x89BF04717E051aA9e1DFE3826eddA6Bcc34dd7d7",
-    "blockNumber": 8685310
+    "address": "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6",
+    "blockNumber": 8690253
   }
 }

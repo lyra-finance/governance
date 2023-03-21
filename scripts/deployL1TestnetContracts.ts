@@ -60,41 +60,41 @@ async function main(): Promise<void> {
 
   // Add voting contracts and executors
 
-  // const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
-  //   lyraToken.address,
-  //   stkLyra.address,
-  // ]);
+  const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
+    lyraToken.address,
+    stkLyra.address,
+  ]);
 
-  // const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
-  //   governanceStrategy.address,
-  //   5, // voting delay - can only start voting after this many blocks
-  //   deployer.address,
-  //   [deployer.address],
-  // ]);
+  const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
+    governanceStrategy.address,
+    5, // voting delay - can only start voting after this many blocks
+    deployer.address,
+    [deployer.address],
+  ]);
 
-  // await deployAndValidate("Executor", deployer, "Executor", [
-  //   // admin
-  //   lyraGovernance.address,
-  //   // delay - time before being able to vote (sec)
-  //   10,
-  //   // grace period - time after `delay` while a proposal can be executed
-  //   5 * DAY_SEC,
-  //   // min delay
-  //   1,
-  //   // max delay
-  //   12 * DAY_SEC,
-  //   // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
-  //   100,
-  //   // vote duration (blocks, so ~10min)
-  //   40, // number of blocks vote lasts after the voting delay
-  //   // vote differential: percentage of supply that `for` votes need to be over `against`
-  //   // (100 = basically free 1% voting against)
-  //   100,
-  //   // minimum quorum (at least 2% must vote for this to be able to pass)
-  //   200,
-  // ]);
+  await deployAndValidate("Executor", deployer, "Executor", [
+    // admin
+    lyraGovernance.address,
+    // delay - time before being able to vote (sec)
+    10,
+    // grace period - time after `delay` while a proposal can be executed
+    5 * DAY_SEC,
+    // min delay
+    1,
+    // max delay
+    12 * DAY_SEC,
+    // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
+    100,
+    // vote duration (blocks, so ~10min)
+    40, // number of blocks vote lasts after the voting delay
+    // vote differential: percentage of supply that `for` votes need to be over `against`
+    // (100 = basically free 1% voting against)
+    100,
+    // minimum quorum (at least 2% must vote for this to be able to pass)
+    200,
+  ]);
 
-  // console.log("\n****** Finished Deployment ******");
+  console.log("\n****** Finished Deployment ******");
 }
 
 main()
