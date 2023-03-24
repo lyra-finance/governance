@@ -1,6 +1,10 @@
 {
   "optimismBridgeExecutor": {
-    "address": "0xbe95dfcaa49fD4bB2178F6725F6A2fF46AC53e0B",
-    "blockNumber": 6760272
+    "address": "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F",
+    "blockNumber": 7015945
+  },
+  "Lyra": {
+    "address": "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4",
+    "blockNumber": 7016142
   }
 }

@@ -484,18 +484,39 @@ const LYRA_ABI = [
   },
 ];
 
+// async function main(): Promise<void> {
+//   validateBaseEnvs();
+//   const deployer = await getFirstSigner();
+
+//   const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
+//   const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
+//   const LYRA_TOKEN = "0x81dC2c079057Ec6Ce15F0f83F8209A529f4d1D0c";
+
+//   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
+//   const lyraToken = new ethers.Contract(LYRA_TOKEN, LYRA_ABI, deployer);
+
+//   const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
+
+//   const tx = {to: testAdddress, value: ethers.utils.parseEther("0.26")};
+
+//   const tx1 = await deployer.sendTransaction(tx);
+//   console.log("Transaction sent", tx1.hash);
+//   await tx1.wait();
+
+//   console.log("\n****** Finished creating proposal ******");
+// }
 async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
 
-  const GOVV2_L1_GOERLI = "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8";
-  const EXE_L1_GOERLI = "0x89BF04717E051aA9e1DFE3826eddA6Bcc34dd7d7";
-  const LYRA_TOKEN = "0x553c838f4768da99995Ff9dec459c97a02F3cF15";
+  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
+  const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
+  const LYRA_TOKEN = "0x81dC2c079057Ec6Ce15F0f83F8209A529f4d1D0c";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
   const lyraToken = new ethers.Contract(LYRA_TOKEN, LYRA_ABI, deployer);
 
-  const testAdddress = "0x15aDBea538f541271dA5E4436E41285e386E3336";
+  const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
   const tx = await lyraToken.populateTransaction.transfer(testAdddress, toBN("1000"));
 

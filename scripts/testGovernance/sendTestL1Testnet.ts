@@ -332,28 +332,24 @@ async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
 
-  const GOVV2_L1_GOERLI = "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8";
-  const EXE_L1_GOERLI = "0x89BF04717E051aA9e1DFE3826eddA6Bcc34dd7d7";
+  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
+  const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
 
-  const testAdddress = "0x15aDBea538f541271dA5E4436E41285e386E3336";
-
-  // const tx = await deployer.populateTransaction({
-  //   to: testAdddress,
-  //   value: ethers.utils.parseEther('0.01'),
-  // });
+  const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
   // const tx1 = await lyraGov.create(EXE_L1_GOERLI, [testAdddress], [ethers.utils.parseEther('0.01')], [""], [""], [false], toBytes32(""));
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,
     [testAdddress],
-    [ethers.utils.parseEther("0.00115")],
+    [ethers.utils.parseEther("0.1")],
     [""],
-    [""],
+    ["0x"],
     [false],
     toBytes32(""),
   );
+
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
 

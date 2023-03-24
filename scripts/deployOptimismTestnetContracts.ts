@@ -19,7 +19,7 @@ async function main(): Promise<void> {
   }
 
   const opBridgeExecutor = await deployAndValidate("OptimismBridgeExecutor", deployer, "optimismBridgeExecutor", [
-    //Optimism L2CrossDomainMessenger
+    // Optimism L2CrossDomainMessenger
     OVM_L2_MESSENGER,
     // ethereumGovernanceExecutor
     ethereumGovernanceExecutor,

@@ -1,6 +1,10 @@
 {
   "arbitrumBridgeExecutor": {
-    "address": "0x631a0389b6a03E3C2724c0231e0d2Ac0e1559364",
-    "blockNumber": 11691282
+    "address": "0x2D2aBC9CEebd6532b934C92FF2A2d2fd00314E1A",
+    "blockNumber": 13228769
+  },
+  "Lyra": {
+    "address": "0x0ddE89A15bC4C4Fb32a79fa68dD07E3dee24675D",
+    "blockNumber": 13229455
   }
 }

@@ -330,10 +330,10 @@ const GOV_ABI = [
 async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
-  const GOVV2_L1_GOERLI = "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8";
+  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
 
-  const tx1 = await lyraGov.execute(42);
+  const tx1 = await lyraGov.execute(28);
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
 

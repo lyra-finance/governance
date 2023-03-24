@@ -503,7 +503,7 @@ async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();
 
-  const GOVV2_L1_GOERLI = "0x24b42ab6d48d361AbE86eA90eF81f2072A53D7b8";
+  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
   // const EXE_L1_GOERLI = "0xd13B175e097285744A337F63a5d56dDEC3FfAfb1";
   const EXE_L2_ARBI_GOERLI = "0x3662A8173ac2eBe57D4f2c22c34A7e7dD84a969C";
   const EXE_L2_OP_GOERLI = "0xbe95dfcaa49fD4bB2178F6725F6A2fF46AC53e0B";

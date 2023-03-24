@@ -5,7 +5,9 @@ import { getContractAddress } from "./utils/store";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
 async function main(): Promise<void> {
+  console.log("start");
   validateBaseEnvs();
+  console.log("after");
 
   const deployer = await getFirstSigner();
   console.log("deploying with:", deployer.address);

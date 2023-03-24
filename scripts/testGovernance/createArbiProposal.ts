@@ -3,6 +3,7 @@ import { validateBaseEnvs } from "../utils/validation";
 import { ethers } from "hardhat";
 import { toBN, toBytes32 } from "../../test/utils";
 import { BigNumber, Contract } from "ethers";
+import { hexDataLength } from "ethers/lib/utils";
 
 const GOV_ABI = [
   {
@@ -1139,58 +1140,59 @@ const INBOX_ABI = [
     type: "function",
   },
 ];
-// async function main(): Promise<void> {
-//   validateBaseEnvs();
-//   const deployer = await getFirstSigner();
-//   // const lyraToken = await deployAndValidate("Lyra", deployer, "Lyra", ["Lyra Test Token", "Lyra Test", toBN("10000")]);
-//   // const EXE_L2_OP_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
-//   const LYRA_ARBI = "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4";
-//   const lyraToken = new ethers.Contract(LYRA_ARBI, LYRA_TEST_ABI, deployer);
-//   const EXE_L2_ARBI_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
-//   await lyraToken.transfer(EXE_L2_ARBI_GOERLI, toBN('10000'))
-//   // // Proposal payload containing data for opBridgeExecutor.queue() to be called by the L1 messenger
-//   // const tx = await ovmL1Messenger.populateTransaction.sendMessage(EXE_L2_OP_GOERLI, opBridgeExecutorTx.data, 10000000);
-//   // const tx1 = await lyraGov.create(
-//   //   EXE_L1_GOERLI,
-//   //   [OVM_L1_MESSENGER_PROXY],
-//   //   [0],
-//   //   [""],
-//   //   [tx.data as string],
-//   //   [false],
-//   //   toBytes32(""),
-//   // );
 
-//   // console.log("Transaction sent", tx1.hash);
-//   // await tx1.wait();
+const createArbitrumBridgeCalldata = async (
+  arbitrumInbox: Contract,
+  arbitrumBridgeExecutor: Contract,
+  targetContract: Contract,
+  fn: string,
+  params: any[],
+  refundAddress: string,
+): Promise<string> => {
+  const targets: string[] = [targetContract.address];
+  const values: BigNumber[] = [BigNumber.from(0)];
+  const signatures: string[] = [""];
+  const calldatas: string[] = [targetContract.interface.encodeFunctionData(fn, [...params])];
+  const withDelegatecalls: boolean[] = [false];
 
-//   console.log("\n****** Finished creating proposal ******");
-// }
-const encodeSimpleActionsSet = (bridgeExecutor: Contract, target: string, fn: string, params: any[]) => {
-  const paramTypes = fn.split("(")[1].split(")")[0].split(",");
-  const data = [
-    [target],
-    [BigNumber.from(0)],
-    [fn],
-    [ethers.utils.defaultAbiCoder.encode(paramTypes, [...params])],
-    [false],
-  ];
-  const encodedData = bridgeExecutor.interface.encodeFunctionData("queue", data as any);
+  const encodedQueue = arbitrumBridgeExecutor.interface.encodeFunctionData("queue", [
+    targets,
+    values,
+    signatures,
+    calldatas,
+    withDelegatecalls,
+  ]);
 
-  return { data, encodedData };
-};
+  const bytesLength = hexDataLength(encodedQueue);
+  const submissionCost = await arbitrumInbox.calculateRetryableSubmissionFee(bytesLength, 0);
+  const submissionCostWithMargin = submissionCost.add(ethers.utils.parseUnits("10", "gwei"));
 
-const ARBITRUM_MAX_GAS = BigNumber.from(200000).mul(3);
-const getSimpleRetryableTicket = (destAddr: string, encodedData: string) => {
-  return {
-    destAddr,
+  const retryableTicket = {
+    destAddr: arbitrumBridgeExecutor.address,
     arbTxCallValue: 0,
-    maxSubmissionCost: 0,
-    submissionRefundAddress: "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C",
-    valueRefundAddress: "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C",
-    maxGas: ARBITRUM_MAX_GAS,
+    maxSubmissionCost: submissionCostWithMargin,
+    submissionRefundAddress: refundAddress,
+    valueRefundAddress: refundAddress,
+    maxGas: BigNumber.from(200000).mul(3),
     gasPriceBid: 0,
-    data: encodedData,
+    data: encodedQueue,
   };
+
+  const encodedRootCalldata = ethers.utils.defaultAbiCoder.encode(
+    ["address", "uint256", "uint256", "address", "address", "uint256", "uint256", "bytes"],
+    [
+      retryableTicket.destAddr,
+      retryableTicket.arbTxCallValue,
+      retryableTicket.maxSubmissionCost,
+      retryableTicket.submissionRefundAddress,
+      retryableTicket.valueRefundAddress,
+      retryableTicket.maxGas,
+      retryableTicket.gasPriceBid,
+      retryableTicket.data,
+    ],
+  );
+
+  return encodedRootCalldata;
 };
 
 async function main(): Promise<void> {
@@ -1198,8 +1200,8 @@ async function main(): Promise<void> {
   const deployer = await getFirstSigner();
   const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
   const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
-  const LYRA_ARBI = "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4";
-  const EXE_L2_ARBI_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
+  const LYRA_ARBI = "0x0ddE89A15bC4C4Fb32a79fa68dD07E3dee24675D";
+  const EXE_L2_ARBI_GOERLI = "0x2D2aBC9CEebd6532b934C92FF2A2d2fd00314E1A";
   const ARBI_INBOX = "0x6BEbC4925716945D46F0Ec336D5C2564F419682C";
 
   const lyraToken = new ethers.Contract(LYRA_ARBI, LYRA_TEST_ABI, deployer);
@@ -1209,38 +1211,33 @@ async function main(): Promise<void> {
 
   const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
-  // const transferTx = await lyraToken.populateTransaction.transfer(testAdddress, toBN("1000"));
-
-  const { data, encodedData } = encodeSimpleActionsSet(
+  const encodedRootCalldata = await createArbitrumBridgeCalldata(
+    arbiInbox,
     arbiBridgeExecutor,
-    lyraToken.address,
+    lyraToken,
     "transfer(address, uint256)",
     [testAdddress, toBN("1000")],
+    deployer.address,
   );
-  console.log(data);
-  const retryableTicket = getSimpleRetryableTicket(arbiBridgeExecutor.address, encodedData);
-
-  // Proposal payload containing data for opBridgeExecutor.queue() to be called by the L1 messenger
-  const tx = await arbiInbox.createRetryableTicket(
-    retryableTicket.destAddr,
-    retryableTicket.arbTxCallValue,
-    retryableTicket.maxSubmissionCost,
-    retryableTicket.submissionRefundAddress,
-    retryableTicket.valueRefundAddress,
-    retryableTicket.maxGas,
-    retryableTicket.gasPriceBid,
-    retryableTicket.data,
-    {
-      gasLimit: 12000000,
-    },
+  const tx1 = await lyraGov.create(
+    EXE_L1_GOERLI,
+    [ARBI_INBOX],
+    [0],
+    ["createRetryableTicket(address,uint256,uint256,address,address,uint256,uint256,bytes)"],
+    [encodedRootCalldata],
+    [false],
+    toBytes32(""),
   );
-
-  const tx1 = await lyraGov.create(EXE_L1_GOERLI, [ARBI_INBOX], [0], [""], [tx.data as string], [false], toBytes32(""));
 
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
-
   console.log("\n****** Finished creating proposal ******");
+
+  // const iface = new ethers.utils.Interface(INBOX_ABI);
+  // const calldata = "0x679b6ded000000000000000000000000ec8dda51cdaf5240743c4f3ca7b6596f27f7c861000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000014c7dcb510f700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000927c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000264d9a4cbdf00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ec8dda51cdaf5240743c4f3ca7b6596f27f7c86100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000024e68a5c3d000000000000000000000000b6f416a47cacb1583903ae6861d023fcbf3be7b6000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
+  // const decodedData = iface.decodeFunctionData("createRetryableTicket", calldata);
+  // console.log(`Decoded ${decodedData}`)
 }
 
 main()
