@@ -2,7 +2,8 @@ import { getFirstSigner } from "../../helpers/helpers";
 import { validateBaseEnvs } from "../utils/validation";
 import { ethers } from "hardhat";
 import { toBN, toBytes32 } from "../../test/utils";
-import { BigNumber, Contract } from "ethers";
+import { BigNumber } from "ethers";
+import { formatUnits, hexDataLength } from "ethers/lib/utils";
 
 const GOV_ABI = [
   {
@@ -328,227 +329,9 @@ const GOV_ABI = [
     type: "function",
   },
 ];
-const OVM_L1_MESSENGER_ABI = [
-  {
-    inputs: [{ internalType: "contract OptimismPortal", name: "_portal", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: true, internalType: "bytes32", name: "msgHash", type: "bytes32" }],
-    name: "FailedRelayedMessage",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: false, internalType: "uint8", name: "version", type: "uint8" }],
-    name: "Initialized",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "previousOwner", type: "address" },
-      { indexed: true, internalType: "address", name: "newOwner", type: "address" },
-    ],
-    name: "OwnershipTransferred",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: false, internalType: "address", name: "account", type: "address" }],
-    name: "Paused",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: true, internalType: "bytes32", name: "msgHash", type: "bytes32" }],
-    name: "RelayedMessage",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "target", type: "address" },
-      { indexed: false, internalType: "address", name: "sender", type: "address" },
-      { indexed: false, internalType: "bytes", name: "message", type: "bytes" },
-      { indexed: false, internalType: "uint256", name: "messageNonce", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "gasLimit", type: "uint256" },
-    ],
-    name: "SentMessage",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "sender", type: "address" },
-      { indexed: false, internalType: "uint256", name: "value", type: "uint256" },
-    ],
-    name: "SentMessageExtension1",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: false, internalType: "address", name: "account", type: "address" }],
-    name: "Unpaused",
-    type: "event",
-  },
-  {
-    inputs: [],
-    name: "MESSAGE_VERSION",
-    outputs: [{ internalType: "uint16", name: "", type: "uint16" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "MIN_GAS_CALLDATA_OVERHEAD",
-    outputs: [{ internalType: "uint64", name: "", type: "uint64" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "MIN_GAS_CONSTANT_OVERHEAD",
-    outputs: [{ internalType: "uint64", name: "", type: "uint64" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "MIN_GAS_DYNAMIC_OVERHEAD_DENOMINATOR",
-    outputs: [{ internalType: "uint64", name: "", type: "uint64" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "MIN_GAS_DYNAMIC_OVERHEAD_NUMERATOR",
-    outputs: [{ internalType: "uint64", name: "", type: "uint64" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "OTHER_MESSENGER",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "PORTAL",
-    outputs: [{ internalType: "contract OptimismPortal", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
+const EXE_L2_ARBI_GOERLI_ABI = [
   {
     inputs: [
-      { internalType: "bytes", name: "_message", type: "bytes" },
-      { internalType: "uint32", name: "_minGasLimit", type: "uint32" },
-    ],
-    name: "baseGas",
-    outputs: [{ internalType: "uint64", name: "", type: "uint64" }],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "failedMessages",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "_owner", type: "address" }],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "messageNonce",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "owner",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  { inputs: [], name: "pause", outputs: [], stateMutability: "nonpayable", type: "function" },
-  {
-    inputs: [],
-    name: "paused",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "_nonce", type: "uint256" },
-      { internalType: "address", name: "_sender", type: "address" },
-      { internalType: "address", name: "_target", type: "address" },
-      { internalType: "uint256", name: "_value", type: "uint256" },
-      { internalType: "uint256", name: "_minGasLimit", type: "uint256" },
-      { internalType: "bytes", name: "_message", type: "bytes" },
-    ],
-    name: "relayMessage",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  { inputs: [], name: "renounceOwnership", outputs: [], stateMutability: "nonpayable", type: "function" },
-  {
-    inputs: [
-      { internalType: "address", name: "_target", type: "address" },
-      { internalType: "bytes", name: "_message", type: "bytes" },
-      { internalType: "uint32", name: "_minGasLimit", type: "uint32" },
-    ],
-    name: "sendMessage",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "successfulMessages",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  { inputs: [], name: "unpause", outputs: [], stateMutability: "nonpayable", type: "function" },
-  {
-    inputs: [],
-    name: "version",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "xDomainMessageSender",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-];
-const EXE_L2_OP_GOERLI_ABI = [
-  {
-    inputs: [
-      { internalType: "address", name: "ovmL2CrossDomainMessenger", type: "address" },
       { internalType: "address", name: "ethereumGovernanceExecutor", type: "address" },
       { internalType: "uint256", name: "delay", type: "uint256" },
       { internalType: "uint256", name: "gracePeriod", type: "uint256" },
@@ -659,13 +442,6 @@ const EXE_L2_OP_GOERLI_ABI = [
     ],
     name: "MinimumDelayUpdate",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "OVM_L2_CROSS_DOMAIN_MESSENGER",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [{ internalType: "uint256", name: "actionsSetId", type: "uint256" }],
@@ -993,20 +769,405 @@ const LYRA_TEST_ABI = [
     type: "function",
   },
 ];
+const INBOX_ABI = [
+  {
+    inputs: [
+      { internalType: "uint256", name: "dataLength", type: "uint256" },
+      { internalType: "uint256", name: "maxDataLength", type: "uint256" },
+    ],
+    name: "DataTooLarge",
+    type: "error",
+  },
+  { inputs: [], name: "GasLimitTooLarge", type: "error" },
+  {
+    inputs: [
+      { internalType: "uint256", name: "expected", type: "uint256" },
+      { internalType: "uint256", name: "actual", type: "uint256" },
+    ],
+    name: "InsufficientSubmissionCost",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "expected", type: "uint256" },
+      { internalType: "uint256", name: "actual", type: "uint256" },
+    ],
+    name: "InsufficientValue",
+    type: "error",
+  },
+  { inputs: [], name: "L1Forked", type: "error" },
+  { inputs: [{ internalType: "address", name: "origin", type: "address" }], name: "NotAllowedOrigin", type: "error" },
+  { inputs: [], name: "NotForked", type: "error" },
+  { inputs: [], name: "NotOrigin", type: "error" },
+  {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "owner", type: "address" },
+    ],
+    name: "NotOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "rollup", type: "address" },
+      { internalType: "address", name: "owner", type: "address" },
+    ],
+    name: "NotRollupOrOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "from", type: "address" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "l2CallValue", type: "uint256" },
+      { internalType: "uint256", name: "deposit", type: "uint256" },
+      { internalType: "uint256", name: "maxSubmissionCost", type: "uint256" },
+      { internalType: "address", name: "excessFeeRefundAddress", type: "address" },
+      { internalType: "address", name: "callValueRefundAddress", type: "address" },
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "RetryableData",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "user", type: "address" },
+      { indexed: false, internalType: "bool", name: "val", type: "bool" },
+    ],
+    name: "AllowListAddressSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: "bool", name: "isEnabled", type: "bool" }],
+    name: "AllowListEnabledUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "messageNum", type: "uint256" },
+      { indexed: false, internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "InboxMessageDelivered",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: true, internalType: "uint256", name: "messageNum", type: "uint256" }],
+    name: "InboxMessageDeliveredFromOrigin",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: "address", name: "account", type: "address" }],
+    name: "Paused",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: false, internalType: "address", name: "account", type: "address" }],
+    name: "Unpaused",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "allowListEnabled",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "bridge",
+    outputs: [{ internalType: "contract IBridge", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "dataLength", type: "uint256" },
+      { internalType: "uint256", name: "baseFee", type: "uint256" },
+    ],
+    name: "calculateRetryableSubmissionFee",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "l2CallValue", type: "uint256" },
+      { internalType: "uint256", name: "maxSubmissionCost", type: "uint256" },
+      { internalType: "address", name: "excessFeeRefundAddress", type: "address" },
+      { internalType: "address", name: "callValueRefundAddress", type: "address" },
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "createRetryableTicket",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "l2CallValue", type: "uint256" },
+      { internalType: "uint256", name: "maxSubmissionCost", type: "uint256" },
+      { internalType: "address", name: "excessFeeRefundAddress", type: "address" },
+      { internalType: "address", name: "callValueRefundAddress", type: "address" },
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "createRetryableTicketNoRefundAliasRewrite",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "depositEth",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "depositEth",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "contract IBridge", name: "_bridge", type: "address" },
+      { internalType: "contract ISequencerInbox", name: "_sequencerInbox", type: "address" },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "isAllowed",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  { inputs: [], name: "pause", outputs: [], stateMutability: "nonpayable", type: "function" },
+  {
+    inputs: [],
+    name: "paused",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "contract IBridge", name: "", type: "address" }],
+    name: "postUpgradeInit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "value", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendContractTransaction",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendL1FundedContractTransaction",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendL1FundedUnsignedTransaction",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendL1FundedUnsignedTransactionToFork",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes", name: "messageData", type: "bytes" }],
+    name: "sendL2Message",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes", name: "messageData", type: "bytes" }],
+    name: "sendL2MessageFromOrigin",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "value", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendUnsignedTransaction",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "value", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "sendUnsignedTransactionToFork",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "uint256", name: "value", type: "uint256" },
+      { internalType: "address", name: "withdrawTo", type: "address" },
+    ],
+    name: "sendWithdrawEthToFork",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "sequencerInbox",
+    outputs: [{ internalType: "contract ISequencerInbox", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address[]", name: "user", type: "address[]" },
+      { internalType: "bool[]", name: "val", type: "bool[]" },
+    ],
+    name: "setAllowList",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bool", name: "_allowListEnabled", type: "bool" }],
+    name: "setAllowListEnabled",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "l2CallValue", type: "uint256" },
+      { internalType: "uint256", name: "maxSubmissionCost", type: "uint256" },
+      { internalType: "address", name: "excessFeeRefundAddress", type: "address" },
+      { internalType: "address", name: "callValueRefundAddress", type: "address" },
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "uniswapCreateRetryableTicket",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+  { inputs: [], name: "unpause", outputs: [], stateMutability: "nonpayable", type: "function" },
+  {
+    inputs: [
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "uint256", name: "l2CallValue", type: "uint256" },
+      { internalType: "uint256", name: "maxSubmissionCost", type: "uint256" },
+      { internalType: "address", name: "excessFeeRefundAddress", type: "address" },
+      { internalType: "address", name: "callValueRefundAddress", type: "address" },
+      { internalType: "uint256", name: "gasLimit", type: "uint256" },
+      { internalType: "uint256", name: "maxFeePerGas", type: "uint256" },
+      { internalType: "bytes", name: "data", type: "bytes" },
+    ],
+    name: "unsafeCreateRetryableTicket",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function",
+  },
+];
 
-const createOptimismBridgeCalldata = async (
-  optimismBridgeExecutor: Contract,
-  targetContract: Contract,
-  fn: string,
-  params: any[],
-): Promise<string> => {
-  const targets: string[] = [targetContract.address];
+async function main(): Promise<void> {
+  validateBaseEnvs();
+  const deployer = await getFirstSigner();
+  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
+  const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
+  const LYRA_ARBI = "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4";
+  const EXE_L2_ARBI_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
+  const ARBI_INBOX = "0x6BEbC4925716945D46F0Ec336D5C2564F419682C";
+
+  const lyraToken = new ethers.Contract(LYRA_ARBI, LYRA_TEST_ABI, deployer);
+  const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
+  const arbiBridgeExecutor = new ethers.Contract(EXE_L2_ARBI_GOERLI, EXE_L2_ARBI_GOERLI_ABI, deployer);
+  const arbiInbox = new ethers.Contract(ARBI_INBOX, INBOX_ABI, deployer);
+
+  const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
+
+  // const transferTx = await lyraToken.populateTransaction.transfer(testAdddress, toBN("1000"));
+  const encodedTransfer = lyraToken.interface.encodeFunctionData("transfer", [testAdddress, toBN("1000")]);
+
+  const targets: string[] = [LYRA_ARBI];
   const values: BigNumber[] = [BigNumber.from(0)];
   const signatures: string[] = [""];
-  const calldatas: string[] = [targetContract.interface.encodeFunctionData(fn, [...params])];
+  const calldatas: string[] = [encodedTransfer];
   const withDelegatecalls: boolean[] = [false];
 
-  const encodedQueue = optimismBridgeExecutor.interface.encodeFunctionData("queue", [
+  // Encode queue data for the token transfer
+  const encodedQueue = arbiBridgeExecutor.interface.encodeFunctionData("queue", [
     targets,
     values,
     signatures,
@@ -1014,46 +1175,43 @@ const createOptimismBridgeCalldata = async (
     withDelegatecalls,
   ]);
 
-  const encodedRootCalldata = ethers.utils.defaultAbiCoder.encode(
-    ["address", "bytes", "uint32"],
-    [optimismBridgeExecutor.address, encodedQueue, 1500000],
+  // Calculate maxSubmissionCost
+  const bytesLength = hexDataLength(encodedQueue);
+  const submissionCost = await arbiInbox.calculateRetryableSubmissionFee(bytesLength, 0);
+  const submissionCostWithMargin = submissionCost.add(ethers.utils.parseUnits("10", "gwei"));
+
+  console.log("before queineg ");
+  // const gasEstimate = await arbiBridgeExecutor.estimateGas.queue(
+  //   targets,
+  //   values,
+  //   signatures,
+  //   calldatas,
+  //   withDelegatecalls
+  // );
+
+  // Add overhead to cover retryable ticket creation etc
+  // const l2GasLimit = BigNumber.from(200000).add(gasEstimate.mul(3).div(2));
+  const l2GasLimit = BigNumber.from(200000).mul(3); // just using max gas limit
+  const l2GasPrice = ethers.utils.parseUnits("0.4", "gwei");
+  console.log(`Using max submission cost: ${submissionCostWithMargin} and max gas: ${l2GasLimit}`);
+
+  console.log("Value needed", formatUnits(submissionCostWithMargin.add(l2GasLimit.mul(l2GasPrice))));
+
+  const tx = await arbiInbox.populateTransaction.createRetryableTicket(
+    arbiBridgeExecutor.address, // to
+    0, // l2CallValue
+    submissionCostWithMargin, // maxSubmissionCost
+    deployer.address, // excessFeeRefundAddress
+    deployer.address, // callValueRefundAddress
+    l2GasLimit, // gasLimit
+    l2GasPrice, // maxFeePerGas
+    encodedQueue, // data
+    {
+      value: submissionCostWithMargin.add(l2GasLimit.mul(l2GasPrice)),
+    },
   );
 
-  return encodedRootCalldata;
-};
-
-async function main(): Promise<void> {
-  validateBaseEnvs();
-  const deployer = await getFirstSigner();
-
-  const OVM_L1_MESSENGER_PROXY = "0x5086d1eEF304eb5284A0f6720f79403b4e9bE294";
-  const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
-  const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
-  const EXE_L2_OP_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
-  const LYRA_TOKEN = "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4";
-
-  const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
-  const lyraToken = new ethers.Contract(LYRA_TOKEN, LYRA_TEST_ABI, deployer);
-  const optimismBridgeExecutor = new ethers.Contract(EXE_L2_OP_GOERLI, EXE_L2_OP_GOERLI_ABI, deployer);
-
-  const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
-
-  const encodedRootCalldata = await createOptimismBridgeCalldata(
-    optimismBridgeExecutor,
-    lyraToken,
-    "transfer(address, uint256)",
-    [testAdddress, toBN("1000")],
-  );
-
-  const tx1 = await lyraGov.create(
-    EXE_L1_GOERLI,
-    [OVM_L1_MESSENGER_PROXY],
-    [0],
-    ["sendMessage(address,bytes,uint32)"],
-    [encodedRootCalldata],
-    [false],
-    toBytes32(""),
-  );
+  const tx1 = await lyraGov.create(EXE_L1_GOERLI, [ARBI_INBOX], [0], [""], [tx.data as string], [false], toBytes32(""));
 
   console.log("Transaction sent", tx1.hash);
   await tx1.wait();
