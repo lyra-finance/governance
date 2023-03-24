@@ -35,7 +35,7 @@ async function main(): Promise<void> {
     [deployer.address],
   ]);
 
-  await deployAndValidate("ExecutorShort", deployer, "ExecutorShort", [
+  await deployAndValidate("Executor", deployer, "ExecutorShort", [
     // admin
     lyraGovernance.address,
     // delay - time before being able to vote (sec)
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
     400,
   ]);
 
-  await deployAndValidate("ExecutorLong", deployer, "ExecutorLong", [
+  await deployAndValidate("Executor", deployer, "ExecutorLong", [
     // admin
     lyraGovernance.address,
     // delay - time before being able to vote (sec)
