@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 
 const LYRA = "0x01BA67AAC7f75f647D94220Cc98FB30FCc5105Bf"
 const STK_LYRA = "0xCb9f85730f57732fc899fb158164b9Ed60c77D49";
-const STK_LYRA_ABI = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_logic","type":"address"},{"internalType":"address","name":"_admin","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"initialize","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_logic","type":"address"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"initialize","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"}];
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -14,15 +13,8 @@ async function main(): Promise<void> {
   const deployer = await getFirstSigner();
   console.log("deploying with:", deployer.address);
 
-  const stkLyra = new ethers.Contract(STK_LYRA, STK_LYRA_ABI, deployer);
   const proxyAdmin = await deployAndValidate("ProxyAdmin", deployer, "ProxyAdmin", []);
-  const proxy = await deployAndValidate("InitializableAdminUpgradeabilityProxy", deployer, "stkLyra", []);
-  await proxy["initialize(address,address,bytes)"](
-    stkLyra.address,
-    proxyAdmin.address,
-    stkLyra.interface.encodeFunctionData("initialize", ["Staked Lyra", "stkLYRA", 18]),
-  );
-
+ 
   const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
     LYRA,
     STK_LYRA,
