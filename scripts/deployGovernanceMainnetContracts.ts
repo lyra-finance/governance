@@ -2,7 +2,6 @@ import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
 import { DAY_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
-import { ethers } from "ethers";
 
 const LYRA = "0x01BA67AAC7f75f647D94220Cc98FB30FCc5105Bf"
 const STK_LYRA = "0xCb9f85730f57732fc899fb158164b9Ed60c77D49";
