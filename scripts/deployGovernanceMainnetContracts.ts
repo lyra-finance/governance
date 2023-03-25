@@ -23,8 +23,8 @@ async function main(): Promise<void> {
   const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
     governanceStrategy.address,
     7200, // voting delay - can only start voting after this many blocks
-    deployer.address,
-    [deployer.address],
+    '0x0000000000000000000000000000000000000000',
+    [],
   ]);
 
   await deployAndValidate("Executor", deployer, "ExecutorShort", [
@@ -53,7 +53,7 @@ async function main(): Promise<void> {
     // admin
     lyraGovernance.address,
     // delay - time before being able to vote (sec)
-    7 * DAY_SEC,
+    DAY_SEC,
     // grace period - time after `delay` while a proposal can be executed
     5 * DAY_SEC,
     // min delay
