@@ -26,7 +26,7 @@ async function main(): Promise<void> {
     [],
   ]);
 
-  await deployAndValidate("Executor", deployer, "ExecutorShort", [
+  const executorShort = await deployAndValidate("Executor", deployer, "ExecutorShort", [
     // admin
     lyraGovernance.address,
     // delay - time before being able to vote (sec)
@@ -48,11 +48,11 @@ async function main(): Promise<void> {
     400,
   ]);
 
-  await deployAndValidate("Executor", deployer, "ExecutorLong", [
+  const executorLong = await deployAndValidate("Executor", deployer, "ExecutorLong", [
     // admin
     lyraGovernance.address,
     // delay - time before being able to vote (sec)
-    DAY_SEC,
+    7 * DAY_SEC,
     // grace period - time after `delay` while a proposal can be executed
     5 * DAY_SEC,
     // min delay
@@ -69,6 +69,9 @@ async function main(): Promise<void> {
     // minimum quorum (at least 20% must vote for this to be able to pass)
     2000,
   ]);
+
+  await lyraGovernance.authorizeExecutors([executorShort.address, executorLong.address]);
+  await lyraGovernance.transferOwnership(executorLong.address);
 
   console.log("\n****** Finished Deployment ******");
 }
