@@ -19,10 +19,11 @@ async function main(): Promise<void> {
     STK_LYRA,
   ]);
 
+  const GUARDIAN = "0x246d38588b16Dd877c558b245e6D5a711C649fCF"
   const lyraGovernance = await deployAndValidate("LyraGovernanceV2", deployer, "LyraGovernanceV2", [
     governanceStrategy.address,
     7200, // voting delay - can only start voting after this many blocks
-    '0x0000000000000000000000000000000000000000',
+    GUARDIAN,
     [],
   ]);
 
