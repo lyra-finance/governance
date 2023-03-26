@@ -146,6 +146,30 @@ describe("GovernorBravo voting with stkLyra", function () {
     // tokens are transferred successfully
     expect(await c.lyraToken.balanceOf(alice.address)).eq(toBN("100"));
     expect(await c.lyraToken.balanceOf(executor.address)).eq(toBN("900"));
+
+    // transfer ownership
+    expect(await aaveGovernance.owner()).eq(admin.address);
+    await aaveGovernance.transferOwnership(executor.address);
+    expect(await aaveGovernance.owner()).eq(executor.address);
+    
+    // can change executor delay value 
+    expect(await executor.getDelay()).eq(7 * DAY_SEC);
+
+    
+    const changeDelay = await executor.populateTransaction.setDelay(8 * DAY_SEC);
+
+    await aaveGovernance
+    .connect(alice)
+    .create(executor.address, [executor.address], [0], [""], [changeDelay.data as string], [false], toBytes32(""));
+    
+    await skipBlocks(6);
+    await aaveGovernance.connect(alice).submitVote(1, true);
+    await skipBlocks(10);
+    await aaveGovernance.connect(admin).queue(1);
+    await fastForward(8 * DAY_SEC);
+    await aaveGovernance.connect(admin).execute(1);
+
+    expect(await executor.getDelay()).eq(8 * DAY_SEC);
   });
 
   beforeEach(async () => {
