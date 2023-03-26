@@ -30,14 +30,14 @@ async function main(): Promise<void> {
   const executorShort = await deployAndValidate("Executor", deployer, "ExecutorShort", [
     // admin
     lyraGovernance.address,
-    // delay - time before being able to vote (sec)
+    // delay - minimum time between queueing and execution of proposal
     DAY_SEC,
     // grace period - time after `delay` while a proposal can be executed
     5 * DAY_SEC,
     // min delay
-    1,
+    DAY_SEC,
     // max delay
-    12 * DAY_SEC,
+    10 * DAY_SEC,
     // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
     50,
     // vote duration (blocks, so ~3day)
@@ -52,14 +52,14 @@ async function main(): Promise<void> {
   const executorLong = await deployAndValidate("Executor", deployer, "ExecutorLong", [
     // admin
     lyraGovernance.address,
-    // delay - time before being able to vote (sec)
+    // delay - minimum time between queueing and execution of proposal
     7 * DAY_SEC,
     // grace period - time after `delay` while a proposal can be executed
     5 * DAY_SEC,
     // min delay
-    1,
+    7 * DAY_SEC,
     // max delay
-    12 * DAY_SEC,
+    10 * DAY_SEC,
     // propositionThreshold (in percentage of 10000, so 100 = 1% of total tokens to create proposal)
     200,
     // vote duration (blocks, so ~10 days)
@@ -73,6 +73,7 @@ async function main(): Promise<void> {
 
   await lyraGovernance.authorizeExecutors([executorShort.address, executorLong.address]);
   await lyraGovernance.transferOwnership(executorLong.address);
+  await proxyAdmin.transferOwnership(GUARDIAN);
 
   console.log("\n****** Finished Deployment ******");
 }
