@@ -146,6 +146,63 @@ describe("GovernorBravo voting with stkLyra", function () {
     // tokens are transferred successfully
     expect(await c.lyraToken.balanceOf(alice.address)).eq(toBN("100"));
     expect(await c.lyraToken.balanceOf(executor.address)).eq(toBN("900"));
+
+    // transfer ownership
+    expect(await aaveGovernance.owner()).eq(admin.address);
+    await aaveGovernance.transferOwnership(executor.address);
+    expect(await aaveGovernance.owner()).eq(executor.address);
+
+    // can change executor delay value
+    expect(await executor.getDelay()).eq(7 * DAY_SEC);
+
+    const changeDelay = await executor.populateTransaction.setDelay(8 * DAY_SEC);
+
+    await aaveGovernance
+      .connect(alice)
+      .create(executor.address, [executor.address], [0], [""], [changeDelay.data as string], [false], toBytes32(""));
+
+    await skipBlocks(6);
+    await aaveGovernance.connect(alice).submitVote(1, true);
+    await skipBlocks(10);
+    await aaveGovernance.connect(admin).queue(1);
+    await fastForward(8 * DAY_SEC);
+    await aaveGovernance.connect(admin).execute(1);
+
+    expect(await executor.getDelay()).eq(8 * DAY_SEC);
+
+    // can transfer eth from executor to address using delegate call flow
+    const amountEth = ethers.utils.parseEther("1");
+
+    // Send ETH to the Executor contract from the admin's account
+    await admin.sendTransaction({
+      to: executor.address,
+      value: amountEth,
+    });
+    let executorBal = await ethers.provider.getBalance(executor.address);
+    expect(executorBal).eq(amountEth);
+
+    // Create random wallet to receive the ETH from the executor
+    const newWallet = ethers.Wallet.createRandom();
+    const transferEth = await (await ethers.getContractFactory("TransferEth")).deploy();
+    const transferTxn = await transferEth.populateTransaction.transferEth(newWallet.address, amountEth);
+
+    await aaveGovernance
+      .connect(alice)
+      .create(executor.address, [transferEth.address], [0], [""], [transferTxn.data as string], [true], toBytes32(""));
+
+    await skipBlocks(6);
+    await aaveGovernance.connect(alice).submitVote(2, true);
+    await skipBlocks(10);
+    await aaveGovernance.connect(admin).queue(2);
+    await fastForward(8 * DAY_SEC);
+    await aaveGovernance.connect(admin).execute(2);
+
+    // New wallet should now have the ETH and the Executor should have 0
+    const randomBal = await ethers.provider.getBalance(newWallet.address);
+    expect(randomBal).eq(amountEth);
+
+    executorBal = await ethers.provider.getBalance(executor.address);
+    expect(executorBal).eq(0);
   });
 
   beforeEach(async () => {
