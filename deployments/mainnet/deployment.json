@@ -10,5 +10,29 @@
   "LyraSafetyModuleProxy": {
     "address": "0xCb9f85730f57732fc899fb158164b9Ed60c77D49",
     "blockNumber": 16408825
+  },
+  "ProxyAdmin": {
+    "address": "0xA02A1f97d9B4e9cB2C15a00D79dC9923102eFD3A",
+    "blockNumber": 16921644
+  },
+  "LyraGovernanceStrategy": {
+    "address": "0xC90147372FCB5D3Ade5A325d8FcFd82d805e26B7",
+    "blockNumber": 16921647
+  },
+  "LyraGovernanceV2": {
+    "address": "0xEDeAa8CefC0D182E61A700ACE093955c288A22D5",
+    "blockNumber": 16921651
+  },
+  "ExecutorShort": {
+    "address": "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af",
+    "blockNumber": 16921657
+  },
+  "ExecutorLong": {
+    "address": "0x07DC0bB91dfB76094FA3DeB814F8E0F849446092",
+    "blockNumber": 16921660
+  },
+  "TransferEth": {
+    "address": "0xfdeF7a2EA950261311aB46b40f936B9c92bFfAe0",
+    "blockNumber": 16921662
   }
 }
