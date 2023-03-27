@@ -151,17 +151,16 @@ describe("GovernorBravo voting with stkLyra", function () {
     expect(await aaveGovernance.owner()).eq(admin.address);
     await aaveGovernance.transferOwnership(executor.address);
     expect(await aaveGovernance.owner()).eq(executor.address);
-    
-    // can change executor delay value 
+
+    // can change executor delay value
     expect(await executor.getDelay()).eq(7 * DAY_SEC);
 
-    
     const changeDelay = await executor.populateTransaction.setDelay(8 * DAY_SEC);
 
     await aaveGovernance
-    .connect(alice)
-    .create(executor.address, [executor.address], [0], [""], [changeDelay.data as string], [false], toBytes32(""));
-    
+      .connect(alice)
+      .create(executor.address, [executor.address], [0], [""], [changeDelay.data as string], [false], toBytes32(""));
+
     await skipBlocks(6);
     await aaveGovernance.connect(alice).submitVote(1, true);
     await skipBlocks(10);
