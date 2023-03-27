@@ -994,6 +994,8 @@ const LYRA_TEST_ABI = [
   },
 ];
 
+const TRANSFER_ABI = [{"inputs":[{"internalType":"address payable","name":"destination","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferEth","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+
 const createOptimismBridgeCalldata = async (
   optimismBridgeExecutor: Contract,
   targetContract: Contract,
@@ -1060,19 +1062,28 @@ async function main(): Promise<void> {
   const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
   const EXE_L2_OP_GOERLI = "0x6971BD7c2BACd8526caFD70C3A0D8cFBD8e9d62F";
   const LYRA_TOKEN = "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4";
+  const TRANSFER_ETH = "0xEBdB1EC3e97A5Eb9C20D94D26037B1d71b703C19";
 
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
   const lyraToken = new ethers.Contract(LYRA_TOKEN, LYRA_TEST_ABI, deployer);
   const optimismBridgeExecutor = new ethers.Contract(EXE_L2_OP_GOERLI, EXE_L2_OP_GOERLI_ABI, deployer);
+  const transferEth = new ethers.Contract(TRANSFER_ETH, TRANSFER_ABI, deployer);
 
   const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
-  const encodedRootCalldata = await createOptimismBridgeCalldata(
+  // const encodedRootCalldata = await createOptimismBridgeCalldata(
+  //   optimismBridgeExecutor,
+  //   lyraToken,
+  //   "transfer(address, uint256)",
+  //   [testAdddress, toBN("1000")],
+  // );
+
+  const encodedRootCalldata = await createOptimismBridgeTransferEthCalldata(
     optimismBridgeExecutor,
-    lyraToken,
-    "transfer(address, uint256)",
-    [testAdddress, toBN("1000")],
-  );
+    transferEth,
+    testAdddress,
+    ethers.utils.parseEther("0.1")
+  )
 
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,

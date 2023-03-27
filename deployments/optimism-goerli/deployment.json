@@ -6,5 +6,9 @@
   "Lyra": {
     "address": "0xF27A512e26e3e77498B2396fC171d1EE2747E1c4",
     "blockNumber": 7016142
+  },
+  "transferEth": {
+    "address": "0xEBdB1EC3e97A5Eb9C20D94D26037B1d71b703C19",
+    "blockNumber": 7229707
   }
 }

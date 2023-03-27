@@ -1184,7 +1184,7 @@ const createArbitrumBridgeCalldata = async (
     submissionRefundAddress: refundAddress,
     valueRefundAddress: refundAddress,
     maxGas: BigNumber.from(200000).mul(3),
-    gasPriceBid: 0,
+    gasPriceBid: 1,
     data: encodedQueue,
   };
 
@@ -1213,6 +1213,7 @@ async function main(): Promise<void> {
   const LYRA_ARBI = "0x0ddE89A15bC4C4Fb32a79fa68dD07E3dee24675D";
   const EXE_L2_ARBI_GOERLI = "0x2D2aBC9CEebd6532b934C92FF2A2d2fd00314E1A";
   const ARBI_INBOX = "0x6BEbC4925716945D46F0Ec336D5C2564F419682C";
+  const TRANSFER_ETH = "0xcEC494909Aa597c71AadE38044D440350A2fBcfF";
 
   const lyraToken = new ethers.Contract(LYRA_ARBI, LYRA_TEST_ABI, deployer);
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
@@ -1229,7 +1230,7 @@ async function main(): Promise<void> {
     [testAdddress, toBN("1000")],
     deployer.address,
   );
-  console.log(`value ${data.l1Value}`)
+  console.log(`value ${data.l1Value * 2}`)
   console.log(`value ${data.encodedRootCalldata}`)
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,
