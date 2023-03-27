@@ -71,6 +71,8 @@ async function main(): Promise<void> {
     2000,
   ]);
 
+  await deployAndValidate("TransferEth", deployer, "TransferEth", []);
+
   await lyraGovernance.authorizeExecutors([executorShort.address, executorLong.address]);
   await lyraGovernance.transferOwnership(executorLong.address);
   await proxyAdmin.transferOwnership(GUARDIAN);
