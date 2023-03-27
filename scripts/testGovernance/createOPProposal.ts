@@ -1022,6 +1022,35 @@ const createOptimismBridgeCalldata = async (
   return encodedRootCalldata;
 };
 
+const createOptimismBridgeTransferEthCalldata = async (
+  optimismBridgeExecutor: Contract,
+  transferContract: Contract,
+  receiver: string,
+  amountEth: BigNumber,
+): Promise<string> => {
+  const tx = await transferContract.populateTransaction.transferEth(receiver, amountEth);
+  const targets: string[] = [transferContract.address];
+  const values: BigNumber[] = [BigNumber.from(0)];
+  const signatures: string[] = [""];
+  const calldatas: string[] = [tx.data as string];
+  const withDelegatecalls: boolean[] = [false];
+
+  const encodedQueue = optimismBridgeExecutor.interface.encodeFunctionData("queue", [
+    targets,
+    values,
+    signatures,
+    calldatas,
+    withDelegatecalls,
+  ]);
+
+  const encodedRootCalldata = ethers.utils.defaultAbiCoder.encode(
+    ["address", "bytes", "uint32"],
+    [optimismBridgeExecutor.address, encodedQueue, 1500000],
+  );
+
+  return encodedRootCalldata;
+};
+
 async function main(): Promise<void> {
   validateBaseEnvs();
   const deployer = await getFirstSigner();

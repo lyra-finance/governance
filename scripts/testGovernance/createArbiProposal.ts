@@ -1141,6 +1141,15 @@ const INBOX_ABI = [
   },
 ];
 
+export class BridgeData {
+  l1Value: any;
+  encodedRootCalldata: string;
+  constructor(l1Value: any, encodedRootCalldata: string) {
+    this.l1Value = l1Value;
+    this.encodedRootCalldata = encodedRootCalldata;
+  }
+}
+
 const createArbitrumBridgeCalldata = async (
   arbitrumInbox: Contract,
   arbitrumBridgeExecutor: Contract,
@@ -1148,7 +1157,7 @@ const createArbitrumBridgeCalldata = async (
   fn: string,
   params: any[],
   refundAddress: string,
-): Promise<string> => {
+): Promise<BridgeData> => {
   const targets: string[] = [targetContract.address];
   const values: BigNumber[] = [BigNumber.from(0)];
   const signatures: string[] = [""];
@@ -1166,7 +1175,8 @@ const createArbitrumBridgeCalldata = async (
   const bytesLength = hexDataLength(encodedQueue);
   const submissionCost = await arbitrumInbox.calculateRetryableSubmissionFee(bytesLength, 0);
   const submissionCostWithMargin = submissionCost.add(ethers.utils.parseUnits("10", "gwei"));
-
+  console.log(`submissionCostwithamrgin ${submissionCostWithMargin}`)
+  
   const retryableTicket = {
     destAddr: arbitrumBridgeExecutor.address,
     arbTxCallValue: 0,
@@ -1191,8 +1201,8 @@ const createArbitrumBridgeCalldata = async (
       retryableTicket.data,
     ],
   );
-
-  return encodedRootCalldata;
+  
+  return new BridgeData(submissionCostWithMargin, encodedRootCalldata);
 };
 
 async function main(): Promise<void> {
@@ -1211,7 +1221,7 @@ async function main(): Promise<void> {
 
   const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
-  const encodedRootCalldata = await createArbitrumBridgeCalldata(
+  const data: BridgeData = await createArbitrumBridgeCalldata(
     arbiInbox,
     arbiBridgeExecutor,
     lyraToken,
@@ -1219,12 +1229,14 @@ async function main(): Promise<void> {
     [testAdddress, toBN("1000")],
     deployer.address,
   );
+  console.log(`value ${data.l1Value}`)
+  console.log(`value ${data.encodedRootCalldata}`)
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,
     [ARBI_INBOX],
-    [0],
+    [data.l1Value * 2],
     ["createRetryableTicket(address,uint256,uint256,address,address,uint256,uint256,bytes)"],
-    [encodedRootCalldata],
+    [data.encodedRootCalldata],
     [false],
     toBytes32(""),
   );

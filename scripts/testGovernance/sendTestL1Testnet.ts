@@ -327,6 +327,7 @@ const GOV_ABI = [
     type: "function",
   },
 ];
+const TRANSFER_ABI = [{"inputs":[{"internalType":"address payable","name":"destination","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferEth","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -334,19 +335,22 @@ async function main(): Promise<void> {
 
   const GOVV2_L1_GOERLI = "0xD5BB4Cd3dbD5164eE5575FBB23542b120a52BdB8";
   const EXE_L1_GOERLI = "0xb6f416a47cACb1583903ae6861D023FcBF3Be7b6";
-
+  const TRANSFER_ETH = "0xC288DEEB259aeDAC740983E906B1e9514A6539a3";
   const lyraGov = new ethers.Contract(GOVV2_L1_GOERLI, GOV_ABI, deployer);
 
+  const transferEth = new ethers.Contract(TRANSFER_ETH, TRANSFER_ABI, deployer);
+  
   const testAdddress = "0xC1D0048b50bB4D67dDbF3ba14Abc6Fca05a6A66C";
 
-  // const tx1 = await lyraGov.create(EXE_L1_GOERLI, [testAdddress], [ethers.utils.parseEther('0.01')], [""], [""], [false], toBytes32(""));
+  const tx = await transferEth.populateTransaction.transferEth(testAdddress, ethers.utils.parseEther("0.1"));
+
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,
-    [testAdddress],
-    [ethers.utils.parseEther("0.1")],
+    [TRANSFER_ETH],
+    [0],
     [""],
-    ["0x"],
-    [false],
+    [tx.data as string],
+    [true],
     toBytes32(""),
   );
 
