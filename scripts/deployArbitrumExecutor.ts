@@ -1,8 +1,10 @@
 import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
-import { DAY_SEC } from "../test/utils";
-import { getContractAddress } from "./utils/store";
+import { DAY_SEC, HOUR_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
+
+const GUARDIAN = "0x2CcF21e5912e9ecCcB0ecdEe9744E5c507cf88AE";
+const SHORT_EXECUTOR = "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af";
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -10,28 +12,22 @@ async function main(): Promise<void> {
   const deployer = await getFirstSigner();
   console.log("deploying with:", deployer.address);
 
-  const ethereumGovernanceExecutor = getContractAddress("Executor", "goerli").address;
-
-  if (!ethereumGovernanceExecutor) {
-    throw Error("Missing executor");
-  }
-
-  const opBridgeExecutor = await deployAndValidate("OptimismBridgeExecutor", deployer, "optimismBridgeExecutor", [
+  const arbiBridgeExecutor = await deployAndValidate("ArbitrumBridgeExecutor", deployer, "arbitrumBridgeExecutor", [
     // ethereumGovernanceExecutor
-    ethereumGovernanceExecutor,
+    SHORT_EXECUTOR,
     // delay
-    20,
+    3 * HOUR_SEC,
     // gracePeriod
     5 * DAY_SEC,
     // minimumDelay
-    1,
+    3 * HOUR_SEC,
     // maximumDelay
-    14 * DAY_SEC,
+    10 * DAY_SEC,
     // guardian
-    deployer.address,
+    GUARDIAN,
   ]);
 
-  console.log(`- opBridgeExecutor: ${opBridgeExecutor.address}`);
+  console.log(`- ArbiBridgeExecutor: ${arbiBridgeExecutor.address}`);
 
   console.log("\n****** Finished Deployment ******");
 }

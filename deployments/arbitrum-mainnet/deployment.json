@@ -2,5 +2,9 @@
   "MultiDistributor": {
     "address": "0xecB73D4621Cabbf199e778CAEBc74bE27f2EcEe1",
     "blockNumber": 59539903
+  },
+  "arbitrumBridgeExecutor": {
+    "address": "0x4072855F2c4BF24bB7c37D5B00EECF05a23F3dF3",
+    "blockNumber": 74387222
   }
 }

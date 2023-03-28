@@ -1,8 +1,11 @@
 import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
-import { DAY_SEC } from "../test/utils";
-import { getContractAddress } from "./utils/store";
+import { DAY_SEC, HOUR_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
+
+const GUARDIAN = "0xD4C00FE7657791C2A43025dE483F05E49A5f76A6";
+const SHORT_EXECUTOR = "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af";
+const OVM_L2_CROSS_DOMAIN_MESSENGER = "0x4200000000000000000000000000000000000007";
 
 async function main(): Promise<void> {
   validateBaseEnvs();
@@ -10,28 +13,24 @@ async function main(): Promise<void> {
   const deployer = await getFirstSigner();
   console.log("deploying with:", deployer.address);
 
-  const ethereumGovernanceExecutor = getContractAddress("Executor", "goerli").address;
-
-  if (!ethereumGovernanceExecutor) {
-    throw Error("Missing executor");
-  }
-
-  const arbiBridgeExecutor = await deployAndValidate("ArbitrumBridgeExecutor", deployer, "arbitrumBridgeExecutor", [
+  const opBridgeExecutor = await deployAndValidate("OptimismBridgeExecutor", deployer, "optimismBridgeExecutor", [
+    // OP cross domain messenger
+    OVM_L2_CROSS_DOMAIN_MESSENGER,
     // ethereumGovernanceExecutor
-    ethereumGovernanceExecutor,
+    SHORT_EXECUTOR,
     // delay
-    20,
+    3 * HOUR_SEC,
     // gracePeriod
     5 * DAY_SEC,
     // minimumDelay
-    1,
+    3 * HOUR_SEC,
     // maximumDelay
-    14 * DAY_SEC,
+    10 * DAY_SEC,
     // guardian
-    deployer.address,
+    GUARDIAN,
   ]);
 
-  console.log(`- ArbiBridgeExecutor: ${arbiBridgeExecutor.address}`);
+  console.log(`- opBridgeExecutor: ${opBridgeExecutor.address}`);
 
   console.log("\n****** Finished Deployment ******");
 }
