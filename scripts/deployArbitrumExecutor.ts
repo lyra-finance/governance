@@ -4,7 +4,7 @@ import { DAY_SEC, HOUR_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
 const GUARDIAN = "0x2CcF21e5912e9ecCcB0ecdEe9744E5c507cf88AE";
-const SHORT_EXECUTOR = "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af";
+const SHORT_EXECUTOR = "0xEE86E99b42981623236824D33b4235833Afd8044";
 
 async function main(): Promise<void> {
   validateBaseEnvs();
