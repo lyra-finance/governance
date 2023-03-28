@@ -77,7 +77,7 @@ describe("GovernorBravo voting with stkLyra", function () {
 
     const governanceStrategy = await (
       await ethers.getContractFactory("LyraGovernanceStrategy")
-    ).deploy(c.lyraToken.address, stakedLyra.address);
+    ).deploy(stakedLyra.address);
 
     const aaveGovernance = (await (
       await ethers.getContractFactory("AaveGovernanceV2")
