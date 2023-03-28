@@ -16,23 +16,23 @@
     "blockNumber": 16921644
   },
   "LyraGovernanceStrategy": {
-    "address": "0xC90147372FCB5D3Ade5A325d8FcFd82d805e26B7",
-    "blockNumber": 16921647
+    "address": "0x110597Da9Aad8EC9Fff32341F986bE70dC9A6811",
+    "blockNumber": 16923918
   },
   "LyraGovernanceV2": {
-    "address": "0xEDeAa8CefC0D182E61A700ACE093955c288A22D5",
-    "blockNumber": 16921651
+    "address": "0xe8642cc1249F08756e70Bb8eb4BE0e6c09254fed",
+    "blockNumber": 16923920
   },
   "ExecutorShort": {
-    "address": "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af",
-    "blockNumber": 16921657
+    "address": "0xEE86E99b42981623236824D33b4235833Afd8044",
+    "blockNumber": 16923922
   },
   "ExecutorLong": {
-    "address": "0x07DC0bB91dfB76094FA3DeB814F8E0F849446092",
-    "blockNumber": 16921660
+    "address": "0x394169592B06cAe64ed48316a79f9Bcf1330AF99",
+    "blockNumber": 16923924
   },
   "TransferEth": {
-    "address": "0xfdeF7a2EA950261311aB46b40f936B9c92bFfAe0",
-    "blockNumber": 16921662
+    "address": "0xe0d43Bb1FFB5634125F28E920528f64a43c1b0BD",
+    "blockNumber": 16923926
   }
 }

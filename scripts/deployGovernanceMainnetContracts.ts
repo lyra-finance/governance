@@ -3,7 +3,6 @@ import { validateBaseEnvs } from "./utils/validation";
 import { DAY_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
-const LYRA = "0x01BA67AAC7f75f647D94220Cc98FB30FCc5105Bf";
 const STK_LYRA = "0xCb9f85730f57732fc899fb158164b9Ed60c77D49";
 const GUARDIAN = "0x246d38588b16Dd877c558b245e6D5a711C649fCF";
 
@@ -16,7 +15,6 @@ async function main(): Promise<void> {
   const proxyAdmin = await deployAndValidate("ProxyAdmin", deployer, "ProxyAdmin", []);
 
   const governanceStrategy = await deployAndValidate("LyraGovernanceStrategy", deployer, "LyraGovernanceStrategy", [
-    LYRA,
     STK_LYRA,
   ]);
 

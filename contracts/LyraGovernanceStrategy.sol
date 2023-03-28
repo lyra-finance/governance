@@ -3,7 +3,7 @@ pragma solidity 0.7.5;
 pragma abicoder v2;
 
 import { IGovernanceStrategy } from "@aave/governance-v2/contracts/interfaces/IGovernanceStrategy.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20 } from "@aave/governance-v2/contracts/interfaces/IERC20.sol";
 import { IGovernancePowerDelegationToken } from "@aave/governance-v2/contracts/interfaces/IGovernancePowerDelegationToken.sol";
 
 /**
@@ -11,31 +11,30 @@ import { IGovernancePowerDelegationToken } from "@aave/governance-v2/contracts/i
  * @dev Smart contract containing logic to measure users' relative power to propose and vote.
  * User Power = User Power from stkLyra Token.
  * User Power from Token = Token Power + Token Power as Delegatee [- Token Power if user has delegated]
- * Two wrapper functions linked to the stkLyra Token's GovernancePowerDelegationERC20.sol implementation
+ * Two wrapper functions linked to stkLyra Tokens's GovernancePowerDelegationERC20.sol implementation
  * - getPropositionPowerAt: fetching a user Proposition Power at a specified block
  * - getVotingPowerAt: fetching a user Voting Power at a specified block
- * @author Lyra
+ * @author LYRA
  **/
 contract LyraGovernanceStrategy is IGovernanceStrategy {
-  address public immutable LYRA;
   address public immutable STK_LYRA;
 
   /**
    * @dev Constructor, register tokens used for Voting and Proposition Powers.
    * @param stkLyra The address of the stkLYRA Token Contract
    **/
-  constructor(address lyra, address stkLyra) {
-    LYRA = lyra;
+  constructor(address stkLyra) {
     STK_LYRA = stkLyra;
   }
 
   /**
-   * @dev Returns the total supply of Proposition Tokens Available for Governance. As the lyra token has a static
-   * token supply, that value can simply be returned.
+   * @dev Returns the total supply of Proposition Tokens Available for Governance
+   * = Supply of stkLyra
+   * @param blockNumber Blocknumber at which to evaluate
    * @return total supply at blockNumber
    **/
-  function getTotalPropositionSupplyAt(uint256 /* blockNumber */) public view override returns (uint256) {
-    return IERC20(LYRA).totalSupply();
+  function getTotalPropositionSupplyAt(uint256 blockNumber) public view override returns (uint256) {
+    return IERC20(STK_LYRA).totalSupplyAt(blockNumber);
   }
 
   /**
@@ -47,7 +46,7 @@ contract LyraGovernanceStrategy is IGovernanceStrategy {
     return getTotalPropositionSupplyAt(blockNumber);
   }
 
-  /*
+  /**
    * @dev Returns the Proposition Power of a user at a specific block number.
    * @param user Address of the user.
    * @param blockNumber Blocknumber at which to fetch Proposition Power
