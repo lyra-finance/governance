@@ -26,5 +26,9 @@
   "TokenMigrator": {
     "address": "0x0474bE53472280f96027b901C0367d2aC7aD539f",
     "blockNumber": 67635094
+  },
+  "optimismBridgeExecutor": {
+    "address": "0x44796e1da22608a9E0CFD33033284284f511282e",
+    "blockNumber": 84166222
   }
 }
