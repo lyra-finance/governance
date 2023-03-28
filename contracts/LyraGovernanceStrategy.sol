@@ -11,7 +11,7 @@ import { IGovernancePowerDelegationToken } from "@aave/governance-v2/contracts/i
  * @dev Smart contract containing logic to measure users' relative power to propose and vote.
  * User Power = User Power from stkLyra Token.
  * User Power from Token = Token Power + Token Power as Delegatee [- Token Power if user has delegated]
- * Two wrapper functions linked to LYRA Tokens's GovernancePowerDelegationERC20.sol implementation
+ * Two wrapper functions linked to stkLyra Tokens's GovernancePowerDelegationERC20.sol implementation
  * - getPropositionPowerAt: fetching a user Proposition Power at a specified block
  * - getVotingPowerAt: fetching a user Voting Power at a specified block
  * @author LYRA
