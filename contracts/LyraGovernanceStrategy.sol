@@ -9,7 +9,7 @@ import { IGovernancePowerDelegationToken } from "@aave/governance-v2/contracts/i
 /**
  * @title Governance Strategy contract
  * @dev Smart contract containing logic to measure users' relative power to propose and vote.
- * User Power = User Power from LYRA Token + User Power from stkLyra Token.
+ * User Power = User Power from stkLyra Token.
  * User Power from Token = Token Power + Token Power as Delegatee [- Token Power if user has delegated]
  * Two wrapper functions linked to LYRA Tokens's GovernancePowerDelegationERC20.sol implementation
  * - getPropositionPowerAt: fetching a user Proposition Power at a specified block
@@ -29,10 +29,7 @@ contract LyraGovernanceStrategy is IGovernanceStrategy {
 
   /**
    * @dev Returns the total supply of Proposition Tokens Available for Governance
-   * = LYRA Available for governance      + stkLyra available
-   * The supply of LYRA staked in stkLyra are not taken into account so:
-   * = (Supply of LYRA - LYRA in stkLyra) + (Supply of stkLyra)
-   * = Supply of LYRA, Since the supply of stkLyra is equal to the number of LYRA staked
+   * = Supply of stkLyra
    * @param blockNumber Blocknumber at which to evaluate
    * @return total supply at blockNumber
    **/
