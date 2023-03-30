@@ -75,12 +75,15 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
     await restoreSnapshot(snap);
   });
 
-  it("should start the staking cooldown period", async () => {
-    await stakedLyra.stake(alice.address, vestingAmount);
-
+  it("should allow staking and redeeming", async () => {
+    expect(await stakedLyra.totalSupplyAt(0)).eq(0);
+    let tx = await stakedLyra.stake(alice.address, vestingAmount);
+    const stakeBlock = (await tx.wait()).blockNumber;
     await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith(
       "UNSTAKE_WINDOW_FINISHED",
     );
+    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(0);
+    expect(await stakedLyra.totalSupplyAt(stakeBlock)).eq(vestingAmount);
 
     await stakedLyra.connect(alice).cooldown();
 
@@ -90,7 +93,13 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
 
     const preBalance = await c.lyraToken.balanceOf(alice.address);
 
-    await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
+    tx = await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
+    const redeemBlock = (await tx.wait()).blockNumber;
+
+    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(0);
+    expect(await stakedLyra.totalSupplyAt(stakeBlock)).eq(vestingAmount);
+    expect(await stakedLyra.totalSupplyAt(redeemBlock - 1)).eq(vestingAmount);
+    expect(await stakedLyra.totalSupplyAt(redeemBlock)).eq(0);
 
     expect(await stakedLyra.balanceOf(alice.address)).eq(0); // nothing changed
     expect(await c.lyraToken.balanceOf(alice.address)).eq(preBalance.add(vestingAmount)); // nothing changed
