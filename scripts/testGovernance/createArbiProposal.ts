@@ -3,7 +3,7 @@ import { validateBaseEnvs } from "../utils/validation";
 import { ethers } from "hardhat";
 import { toBN, toBytes32 } from "../../test/utils";
 import { BigNumber, Contract } from "ethers";
-import { hexDataLength } from "ethers/lib/utils";
+import { formatUnits, hexDataLength } from "ethers/lib/utils";
 
 const GOV_ABI = [
   {
@@ -1184,25 +1184,41 @@ const createArbitrumBridgeCalldata = async (
     submissionRefundAddress: refundAddress,
     valueRefundAddress: refundAddress,
     maxGas: BigNumber.from(200000).mul(3),
-    gasPriceBid: 1,
+    gasPriceBid: ethers.utils.parseUnits('0.4', 'gwei'),
     data: encodedQueue,
   };
 
-  const encodedRootCalldata = ethers.utils.defaultAbiCoder.encode(
-    ["address", "uint256", "uint256", "address", "address", "uint256", "uint256", "bytes"],
-    [
-      retryableTicket.destAddr,
-      retryableTicket.arbTxCallValue,
-      retryableTicket.maxSubmissionCost,
-      retryableTicket.submissionRefundAddress,
-      retryableTicket.valueRefundAddress,
-      retryableTicket.maxGas,
-      retryableTicket.gasPriceBid,
-      retryableTicket.data,
-    ],
-  );
-  
-  return new BridgeData(submissionCostWithMargin, encodedRootCalldata);
+  // const encodedRootCalldata = ethers.utils.defaultAbiCoder.encode(
+  //   ["address", "uint256", "uint256", "address", "address", "uint256", "uint256", "bytes"],
+  //   [
+  //     retryableTicket.destAddr,
+  //     retryableTicket.arbTxCallValue,
+  //     retryableTicket.maxSubmissionCost,
+  //     retryableTicket.submissionRefundAddress,
+  //     retryableTicket.valueRefundAddress,
+  //     retryableTicket.maxGas,
+  //     retryableTicket.gasPriceBid,
+  //     retryableTicket.data,
+  //   ],
+  // );
+  const value = retryableTicket.maxSubmissionCost.add(retryableTicket.maxGas.mul(retryableTicket.gasPriceBid));
+  const encodedRootCalldata = await arbitrumInbox.populateTransaction.createRetryableTicket(
+    retryableTicket.destAddr,
+    retryableTicket.arbTxCallValue,
+    retryableTicket.maxSubmissionCost,
+    retryableTicket.submissionRefundAddress,
+    retryableTicket.valueRefundAddress,
+    retryableTicket.maxGas,
+    retryableTicket.gasPriceBid,
+    retryableTicket.data,
+    { 
+      value: value
+    }
+  )
+  console.log(`Value ${value}`);
+  console.log(`Value ${formatUnits(value)}`);
+
+  return new BridgeData(value, encodedRootCalldata.data as string);
 };
 
 async function main(): Promise<void> {
@@ -1229,13 +1245,13 @@ async function main(): Promise<void> {
     [testAdddress, toBN("1000")],
     deployer.address,
   );
-  console.log(`value ${data.l1Value * 2}`)
+  console.log(`value ${formatUnits(data.l1Value)}`)
   console.log(`value ${data.encodedRootCalldata}`)
 
   const tx1 = await lyraGov.create(
     EXE_L1_GOERLI,
     [ARBI_INBOX],
-    [data.l1Value * 10],
+    [data.l1Value],
     ["createRetryableTicket(address,uint256,uint256,address,address,uint256,uint256,bytes)"],
     [data.encodedRootCalldata],
     [false],
