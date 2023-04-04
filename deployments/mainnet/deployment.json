@@ -34,5 +34,9 @@
   "TransferEth": {
     "address": "0xe0d43Bb1FFB5634125F28E920528f64a43c1b0BD",
     "blockNumber": 16923926
+  },
+  "LyraSafetyModule": {
+    "address": "0xDA2C1CAC4F87d75FE4B1704030D49FC4Be96D9cb",
+    "blockNumber": 16973042
   }
 }

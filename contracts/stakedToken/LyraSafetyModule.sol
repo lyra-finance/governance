@@ -76,7 +76,7 @@ contract LyraSafetyModule is VirtualAAVEStakedToken {
   function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
     // Additionally keep track when the total supply changes
     // We use the address(0) _votingSnapshots to preserve the shape of the state in the contracts
-    
+
     // When tokens are minted
     if (from == address(0)) {
       uint previous = this.totalSupply();
