@@ -14,7 +14,7 @@ import { SafeERC20 } from "@aave/aave-stake-v2/contracts/lib/SafeERC20.sol";
 
 import { VersionedInitializable } from "@aave/aave-stake-v2/contracts/utils/VersionedInitializable.sol";
 import { AaveDistributionManager } from "@aave/aave-stake-v2/contracts/stake/AaveDistributionManager.sol";
-import { GovernancePowerWithSnapshot } from "@aave/aave-stake-v2/contracts/lib/GovernancePowerWithSnapshot.sol";
+import { VirtualGovernancePowerWithSnapshot } from "./VirtualGovernancePowerWithSnapshot.sol";
 
 /**
  * @title StakedToken V3
@@ -23,7 +23,7 @@ import { GovernancePowerWithSnapshot } from "@aave/aave-stake-v2/contracts/lib/G
  **/
 contract VirtualAAVEStakedToken is
   IStakedAave,
-  GovernancePowerWithSnapshot,
+  VirtualGovernancePowerWithSnapshot,
   VersionedInitializable,
   AaveDistributionManager
 {
@@ -360,7 +360,7 @@ contract VirtualAAVEStakedToken is
    * @param to the to address
    * @param amount the amount to transfer
    */
-  function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+  function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override {
     address votingFromDelegatee = _votingDelegates[from];
     address votingToDelegatee = _votingDelegates[to];
 

@@ -24,8 +24,6 @@
     "docgen": "yarn doc:uml && yarn docify",
     "size": "hardhat size-contracts",
     "gas-report": "REPORT_GAS=true yarn run test",
-    "deploy:distributor:optimism-mainnet": "hardhat run scripts/deployDistributor.ts --network optimism-mainnet",
-    "deploy:distributor:arbitrum-mainnet": "hardhat run scripts/deployDistributor.ts --network arbitrum-mainnet",
     "wait:local": "wait-port 8545"
   },
   "dependencies": {

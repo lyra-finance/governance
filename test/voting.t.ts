@@ -118,26 +118,32 @@ describe("GovernorBravo voting with stkLyra", function () {
     // Note: must have 6.5% of the total supply staked
     const tx = await c.lyraToken.populateTransaction.transfer(alice.address, toBN("100"));
 
-    console.log("- create proposal");
+    //////
+    // Create proposal
 
     await aaveGovernance
       .connect(alice)
       .create(executor.address, [c.lyraToken.address], [0], [""], [tx.data as string], [false], toBytes32(""));
 
-    console.log("- voting");
+    //////
+    // Voting
 
     // cannot vote before the waiting period ends
     await expect(aaveGovernance.connect(alice).submitVote(0, true)).revertedWith("VOTING_CLOSED");
     await skipBlocks(6);
     await aaveGovernance.connect(alice).submitVote(0, true);
 
-    console.log("- queue");
+    //////
+    // Queue
+
     // cannot queue before voting period ends
     await expect(aaveGovernance.connect(admin).queue(0)).revertedWith("INVALID_STATE_FOR_QUEUE");
     await skipBlocks(10);
     await aaveGovernance.connect(admin).queue(0);
 
-    console.log("- execute");
+    //////
+    // Execute
+
     // canot execute before timelock ends
     await expect(aaveGovernance.connect(admin).execute(0)).revertedWith("TIMELOCK_NOT_FINISHED");
     await fastForward(8 * DAY_SEC);
