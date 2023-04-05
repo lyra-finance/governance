@@ -2,7 +2,6 @@ import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "./utils/validation";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
-
 async function main(): Promise<void> {
   validateBaseEnvs();
 

@@ -1,7 +1,6 @@
 import { getFirstSigner } from "../helpers/helpers";
 import { validateBaseEnvs } from "../scripts/utils/validation";
-import { ethers } from "hardhat";
-import { DAY_SEC, HOUR_SEC, toBN, YEAR_SEC } from "../test/utils";
+import { HOUR_SEC, toBN, YEAR_SEC } from "../test/utils";
 import { deployAndValidate } from "../scripts/utils/deployAndValidate";
 
 async function main(): Promise<void> {
