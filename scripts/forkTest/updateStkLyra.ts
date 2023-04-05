@@ -53,7 +53,7 @@ async function main(): Promise<void> {
       // address rewardsVault
       "0x8ef8eEEB39b21ECdDE451e6C539017DF24D14a19",
       // address emissionManager
-      governance.address,
+      executor.address,
       // uint128 distributionDuration
       YEAR_SEC * 100,
     ],
