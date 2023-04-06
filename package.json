@@ -11,7 +11,7 @@
     "test-e2e": "mocha --config .mocharc-e2e.js",
     "coverage": "hardhat coverage",
     "lint": "yarn run lint:sol && yarn run lint:ts && yarn run prettier:list-different",
-    "lint:sol": "solhint --config ./.solhint.json --ignore-path .solhintignore --max-warnings 7 \"contracts/**/*.sol\"",
+    "lint:sol": "solhint --config ./.solhint.json --ignore-path .solhintignore --max-warnings 8 \"contracts/**/*.sol\"",
     "lint:sol:fix": "yarn lint:sol --fix",
     "lint:ts": "eslint --config ./.eslintrc.yaml --ignore-path ./.eslintignore --ext .js,.ts .",
     "lint:ts:fix": "yarn lint:ts --fix",

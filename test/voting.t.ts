@@ -38,6 +38,7 @@ describe("GovernorBravo voting with stkLyra", function () {
       await ethers.getContractFactory("LyraSafetyModule")
     ).deploy(
       c.lyraToken.address,
+      c.lyraToken.address,
       COOLDOWN_SECONDS,
       UNSTAKE_WINDOW,
       admin.address,

@@ -12,6 +12,8 @@ async function main(): Promise<void> {
   await deployAndValidate("LyraSafetyModule", deployer, "LyraSafetyModule", [
     // lyra token
     "0x01ba67aac7f75f647d94220cc98fb30fcc5105bf",
+    // reward token
+    "0xCb9f85730f57732fc899fb158164b9Ed60c77D49",
     // uint256 cooldownSeconds
     14 * DAY_SEC,
     // uint256 unstakeWindow
