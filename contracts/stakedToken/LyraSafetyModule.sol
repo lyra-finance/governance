@@ -22,6 +22,7 @@ contract LyraSafetyModule is VirtualAAVEStakedToken {
 
   constructor(
     IERC20 stakedToken,
+    IERC20 rewardToken,
     uint256 cooldownSeconds,
     uint256 unstakeWindow,
     address rewardsVault,
@@ -31,7 +32,7 @@ contract LyraSafetyModule is VirtualAAVEStakedToken {
     public
     VirtualAAVEStakedToken(
       stakedToken,
-      IERC20(address(this)),
+      rewardToken,
       cooldownSeconds,
       unstakeWindow,
       rewardsVault,
