@@ -38,5 +38,9 @@
   "stkLyraImplementation": {
     "address": "0xb872c2A83A3aD1f50Eea87720aCc7f43Ffc56ff0",
     "blockNumber": 16979202
+  },
+  "LyraSafetyModule": {
+    "address": "0x213062749d906F7a15156399F8DEE230c28ea39a",
+    "blockNumber": 16986656
   }
 }
