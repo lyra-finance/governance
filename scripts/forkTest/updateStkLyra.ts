@@ -4,7 +4,7 @@ import stkLyraProxyAbi from "./abis/Proxy.json";
 import stkLyraAbi from "./abis/StakedLyra.json";
 import executorAbi from "./abis/Executor.json";
 import governanceAbi from "./abis/Governance.json";
-import { DAY_SEC, fromBN, HOUR_SEC, toBN, toBytes32, YEAR_SEC } from "../../test/utils";
+import { DAY_SEC, fastForward, fromBN, HOUR_SEC, toBN, toBytes32, YEAR_SEC } from "../../test/utils";
 
 const stkLyra = new ethers.Contract("0xCb9f85730f57732fc899fb158164b9Ed60c77D49", stkLyraAbi);
 const stkLyraAsProxy = new ethers.Contract("0xCb9f85730f57732fc899fb158164b9Ed60c77D49", stkLyraProxyAbi);
@@ -136,6 +136,11 @@ async function main(): Promise<void> {
   signer = await ethers.getSigner(proposerAddr);
   await stkLyra.connect(signer).claimRewards(signer.address, toBN("1"));
   console.log("\nbalance post-claim:", fromBN(await stkLyra.connect(signer).balanceOf(proposerAddr)));
+
+  await stkLyra.connect(signer).cooldown();
+  await fastForward(14 * DAY_SEC);
+  await stkLyra.connect(signer).redeem(signer.address, toBN("100000"));
+  console.log("\nbalance post-redeem:", fromBN(await stkLyra.connect(signer).balanceOf(proposerAddr)));
 }
 
 main()
