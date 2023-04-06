@@ -83,7 +83,9 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
     await expect(stakedLyra.connect(alice).redeem(alice.address, vestingAmount)).revertedWith(
       "UNSTAKE_WINDOW_FINISHED",
     );
-    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(0);
+
+    // Note: this returns the vesting amount because the cache of the total supply starts at first seen value
+    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(vestingAmount);
     expect(await stakedLyra.totalSupplyAt(stakeBlock)).eq(vestingAmount);
 
     await stakedLyra.connect(alice).cooldown();
@@ -97,7 +99,7 @@ describe("VestingEscrow/StakedLyra - Integration", function () {
     tx = await stakedLyra.connect(alice).redeem(alice.address, vestingAmount);
     const redeemBlock = (await tx.wait()).blockNumber;
 
-    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(0);
+    expect(await stakedLyra.totalSupplyAt(stakeBlock - 1)).eq(vestingAmount);
     expect(await stakedLyra.totalSupplyAt(stakeBlock)).eq(vestingAmount);
     expect(await stakedLyra.totalSupplyAt(redeemBlock - 1)).eq(vestingAmount);
     expect(await stakedLyra.totalSupplyAt(redeemBlock)).eq(0);
