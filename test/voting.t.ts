@@ -1,17 +1,7 @@
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { deployTestContracts, TestSystemContractsType } from "./utils/deployTestSystem";
-import {
-  DAY_SEC,
-  fastForward,
-  mineBlock,
-  restoreSnapshot,
-  takeSnapshot,
-  toBN,
-  toBytes32,
-  WEEK_SEC,
-  ZERO_ADDRESS,
-} from "./utils";
+import { DAY_SEC, fastForward, mineBlock, restoreSnapshot, takeSnapshot, toBN, toBytes32 } from "./utils";
 import { AaveGovernanceV2, Executor, InitializableAdminUpgradeabilityProxy, LyraSafetyModule } from "../typechain";
 import { expect } from "./utils/testSetup";
 
@@ -34,21 +24,21 @@ describe("GovernorBravo voting with stkLyra", function () {
 
     c = await deployTestContracts(admin);
 
+    stakedLyraProxy = (await (
+      await ethers.getContractFactory("InitializableAdminUpgradeabilityProxy")
+    ).deploy()) as InitializableAdminUpgradeabilityProxy;
+
     const stakedLyraImpl = (await (
       await ethers.getContractFactory("LyraSafetyModule")
     ).deploy(
       c.lyraToken.address,
-      c.lyraToken.address,
+      stakedLyraProxy.address,
       COOLDOWN_SECONDS,
       UNSTAKE_WINDOW,
       admin.address,
       admin.address,
       (1000 * 60 * 60).toString(),
     )) as LyraSafetyModule;
-
-    stakedLyraProxy = (await (
-      await ethers.getContractFactory("InitializableAdminUpgradeabilityProxy")
-    ).deploy()) as InitializableAdminUpgradeabilityProxy;
 
     const stakedLyraEncodedInitialize = stakedLyraImpl.interface.encodeFunctionData("initialize", [
       "Staked Lyra",
