@@ -4,7 +4,7 @@ import stkLyraProxyAbi from "./abis/Proxy.json";
 import stkLyraAbi from "./abis/StakedLyra.json";
 import executorAbi from "./abis/Executor.json";
 import governanceAbi from "./abis/Governance.json";
-import { fromBN, HOUR_SEC, toBN, toBytes32, YEAR_SEC } from "../../test/utils";
+import { DAY_SEC, fromBN, HOUR_SEC, toBN, toBytes32, YEAR_SEC } from "../../test/utils";
 
 const stkLyra = new ethers.Contract("0xCb9f85730f57732fc899fb158164b9Ed60c77D49", stkLyraAbi);
 const stkLyraAsProxy = new ethers.Contract("0xCb9f85730f57732fc899fb158164b9Ed60c77D49", stkLyraProxyAbi);
@@ -46,10 +46,12 @@ async function main(): Promise<void> {
     [
       // lyra token
       "0x01ba67aac7f75f647d94220cc98fb30fcc5105bf",
+      // reward token
+      stkLyra.address,
       // uint256 cooldownSeconds
-      HOUR_SEC,
+      14 * DAY_SEC,
       // uint256 unstakeWindow
-      2 * HOUR_SEC,
+      2 * DAY_SEC,
       // address rewardsVault
       "0x8ef8eEEB39b21ECdDE451e6C539017DF24D14a19",
       // address emissionManager
@@ -129,8 +131,11 @@ async function main(): Promise<void> {
 
   await governance.connect(signer).execute(0);
   console.log("Post execute:", ProposalState[await governance.connect(signer).getProposalState(proposalCount.sub(1))]);
-
   console.log("\nbalance post-execute:", fromBN(await stkLyra.connect(signer).balanceOf(proposerAddr)));
+
+  signer = await ethers.getSigner(proposerAddr);
+  await stkLyra.connect(signer).claimRewards(signer.address, toBN("1"));
+  console.log("\nbalance post-claim:", fromBN(await stkLyra.connect(signer).balanceOf(proposerAddr)));
 }
 
 main()
