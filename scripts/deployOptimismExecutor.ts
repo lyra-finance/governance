@@ -4,7 +4,7 @@ import { DAY_SEC, HOUR_SEC } from "../test/utils";
 import { deployAndValidate } from "./utils/deployAndValidate";
 
 const GUARDIAN = "0xD4C00FE7657791C2A43025dE483F05E49A5f76A6";
-const SHORT_EXECUTOR = "0x50cdcf492Bf80a274881589EDe6AD652c9CE07Af";
+const SHORT_EXECUTOR = "0xEE86E99b42981623236824D33b4235833Afd8044";
 const OVM_L2_CROSS_DOMAIN_MESSENGER = "0x4200000000000000000000000000000000000007";
 
 async function main(): Promise<void> {
